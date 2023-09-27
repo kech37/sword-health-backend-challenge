@@ -1,7 +1,10 @@
 import express, { Express } from "express";
 import { SetupController } from "./controllers/setup-controller";
+import { DatabaseService } from "./services/database-service";
 
 export class SwordHealthBackendChallengeService {
+  private static instance?: SwordHealthBackendChallengeService;
+
   private httpService: Express;
 
   constructor() {
@@ -9,14 +12,19 @@ export class SwordHealthBackendChallengeService {
   }
 
   static getInstance(): SwordHealthBackendChallengeService {
-    return new SwordHealthBackendChallengeService();
+    if (this.instance) {
+      return this.instance;
+    }
+    this.instance = new SwordHealthBackendChallengeService();
+    return this.instance;
   }
 
   private setupControllers(): void {
     new SetupController(this.httpService);
   }
 
-  run(): void {
+  async run(): Promise<void> {
+    await DatabaseService.getInstance().run();
     this.setupControllers();
 
     this.httpService.listen(3000, () =>

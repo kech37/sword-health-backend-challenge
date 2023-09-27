@@ -1,20 +1,25 @@
-version: "3.8"
-
+version: "3.3"
 services:
   db:
-  image: mysql:latest
-  container_name: mySqlCont
-  command: --default-authentication-plugin=mysql_native_password
-  restart: unless-stopped
-  environment:
-    MYSQL_USER: user
-    MYSQL_ROOT_PASSWORD: mypassword
-    MYSQL_PASSWORD: mypassword
-    MYSQL_DATABASE: testdb
-  volumes:
-    - my-db:/var/lib/mysql
-  ports:
-    - "3306:3306"
-
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: "public"
+      # So you don't have to use root, but you can if you like
+      MYSQL_USER: "user"
+      # You can use whatever password you like
+      MYSQL_PASSWORD: "password"
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: "root-password"
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - "3306:3306"
+    expose:
+      # Opens port 3306 on the container
+      - "3306"
+      # Where our data will be persisted
+    volumes:
+      - service-db:/var/lib/mysql
+# Names our volume
 volumes:
-  my-db:
+  service-db:
