@@ -1,9 +1,10 @@
 import * as env from 'env-var';
 import { LogLevel } from '../@types/log-level';
 
-// TODO add custom logging
 export class Config {
   static LOG_LEVEL: LogLevel = env.get('log_level').required().asEnum(Object.values(LogLevel));
+
+  static HTTP_SERVER_PORT = env.get('http_server_port').required().asPortNumber();
 
   static DATABASE = {
     HOST: env.get('database_host').required().asString(),

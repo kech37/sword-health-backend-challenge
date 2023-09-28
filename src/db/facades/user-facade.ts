@@ -30,7 +30,7 @@ export class UserFacade extends BaseFacade<SwordHealthBackendChallengeService> {
       return;
     }
 
-    if (!this.service || !this.service.getDataSource) {
+    if (!this.service.getDataSource.isInitialized) {
       throw ErrorUtils.createApplicationError(AppDatabaseErrors.NotConfigured);
     }
 

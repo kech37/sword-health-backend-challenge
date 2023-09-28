@@ -5,6 +5,7 @@ import { SetupController } from './controllers/setup-controller';
 import { DatabaseService } from './services/database-service';
 import { WebServerService } from './services/web-server-service';
 import { RequestIdMiddleware } from './web-server/middlewares/request-id-middleware';
+import { Config } from './configs/config';
 
 export class SwordHealthBackendChallengeService extends BaseService {
   private readonly webServer: WebServerService;
@@ -17,7 +18,7 @@ export class SwordHealthBackendChallengeService extends BaseService {
     super('Sword-Health-Backend-Challenge-Service');
 
     this.dataSource = this.lifeCycleManager.addService(new DatabaseService(this));
-    this.webServer = this.lifeCycleManager.addService(new WebServerService(this, 3000));
+    this.webServer = this.lifeCycleManager.addService(new WebServerService(this, Config.HTTP_SERVER_PORT));
 
     this.webServer.use(RequestIdMiddleware);
 
