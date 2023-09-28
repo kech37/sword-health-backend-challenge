@@ -13,4 +13,6 @@ export class Config {
     PASSWORD: env.get('database_password').required().asString(),
     DATABASE: env.get('database_database').required().asString(),
   };
+
+  static TOKEN_SCRET = env.get('token_secret').required().asString();
 }

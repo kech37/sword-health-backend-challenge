@@ -3,6 +3,10 @@
     "NotAUUID": {
       "code": "I-100",
       "description": "VARIABLE_IS_NOT_A_UUID"
+    },
+    "NotAValidJwtPayload": {
+      "code": "I-101",
+      "description": "VARIABLE_IS_NOT_A_VALID_JWT_PAYLOAD"
     }
   },
   "Singleton": {
