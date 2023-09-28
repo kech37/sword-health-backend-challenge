@@ -1,33 +1,43 @@
-import express, { Express } from "express";
-import { SetupController } from "./controllers/setup-controller";
-import { DatabaseService } from "./services/database-service";
-import { LogService } from "./services/log-service";
+import { DataSource } from 'typeorm';
+import { BaseController } from './base/base-controller';
+import { BaseService } from './base/base-service';
+import { SetupController } from './controllers/setup-controller';
+import { DatabaseService } from './services/database-service';
+import { WebServerService } from './services/web-server-service';
 
-export class SwordHealthBackendChallengeService {
-  httpService: Express;
+export class SwordHealthBackendChallengeService extends BaseService {
+  private readonly webServer: WebServerService;
 
-  databaseService: DatabaseService;
+  private readonly dataSource: DatabaseService;
+
+  private controllers: BaseController<SwordHealthBackendChallengeService>[];
 
   constructor() {
-    this.httpService = express();
-    this.databaseService = new DatabaseService();
+    super('Sword-Health-Backend-Challenge-Service');
 
-    new SetupController(this.httpService);
+    this.dataSource = this.lifeCycleManager.addService(new DatabaseService(this));
+    this.webServer = this.lifeCycleManager.addService(new WebServerService(this, 3000));
+
+    this.controllers = [];
   }
 
-  async run() {
-    await this.databaseService
-      .run()
-      .then(() =>
-        this.httpService.listen(3000, () => {
-          LogService.getInstance().debug(`Service listening on port: ${3000}`);
-        })
-      )
-      .catch((error) =>
-        LogService.getInstance().error(
-          { error },
-          "SwordHealthBackendChallengeService: run error"
-        )
-      );
+  get getWebServer(): WebServerService {
+    return this.webServer;
+  }
+
+  get getDataSource(): DataSource {
+    return this.dataSource.dataSource;
+  }
+
+  private setupControllers(): void {
+    this.controllers.push(new SetupController(this));
+  }
+
+  run(): this {
+    super.run();
+
+    this.setupControllers();
+
+    return this;
   }
 }

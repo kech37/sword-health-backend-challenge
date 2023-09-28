@@ -1,17 +1,17 @@
-import { BaseEntity, Column, Entity } from "typeorm";
-import { UserRole } from "../@types/user-role";
+import { BaseEntity, Column, Entity } from 'typeorm';
+import { UserRole } from '../@types/user-role';
 
-@Entity("user", { schema: "public" })
+@Entity('user', { schema: 'public' })
 export class UserEntity extends BaseEntity {
-  @Column("uuid", {
+  @Column('uuid', {
     primary: true,
-    name: "id",
-    default: () => "(UUID())",
+    name: 'id',
+    default: () => '(UUID())',
   })
   id!: string;
 
-  @Column("enum", {
-    name: "role",
+  @Column('enum', {
+    name: 'role',
     enum: UserRole,
   })
   role!: UserRole;

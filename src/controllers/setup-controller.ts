@@ -1,20 +1,20 @@
-import { Express, Request, Response } from "express";
-import { UserFacade } from "../db/facades/user-facade";
-import { LogService } from "../services/log-service";
+import { Request, Response } from 'express';
+import { BaseController } from '../base/base-controller';
+import { UserFacade } from '../db/facades/user-facade';
+import { WebMethod } from '../services/web-server-service';
+import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 
-export class SetupController {
-  constructor(httpService: Express) {
-    httpService.get("/hello", this.getHello);
+export class SetupController extends BaseController<SwordHealthBackendChallengeService> {
+  constructor(service: SwordHealthBackendChallengeService) {
+    super(service);
+
+    this.service.getWebServer.on(WebMethod.GET, '/hello', this.getHello.bind(this));
   }
 
-  private async getHello(
-    _request: Request,
-    response: Response
-  ): Promise<Response> {
-    LogService.getInstance().info("SetupController: getHello");
+  private async getHello(_request: Request, response: Response): Promise<Response> {
+    this.logger.info('SetupController: getHello');
     const result = await UserFacade.getInstace().get();
-
-    LogService.getInstance().info({ result }, "getHello: result");
+    this.logger.debug({ result }, 'getHello: result');
     return response.status(200).send(result);
   }
 }
