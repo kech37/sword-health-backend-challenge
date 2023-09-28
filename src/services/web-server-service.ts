@@ -1,16 +1,8 @@
 import express, { Handler } from 'express';
 import { Server } from 'http';
+import { WebMethod } from '../@types/web-method';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { LifeCycleManager } from './life-cicle-manager';
-
-export enum WebMethod {
-  POST = 'POST',
-  GET = 'GET',
-  PATCH = 'PATCH',
-  DELETE = 'DELETE',
-  HEAD = 'HEAD',
-  PUT = 'PUT',
-}
 
 export class WebServerService extends LifeCycleManager {
   app = express();
@@ -31,7 +23,7 @@ export class WebServerService extends LifeCycleManager {
     return this;
   }
 
-  on(method: WebMethod | string, path: string, ...handlers: Handler[]): WebServerService {
+  on(method: WebMethod, path: string, ...handlers: Handler[]): WebServerService {
     this.logger.info({ port: this.port, method, path }, 'WebServerService: on');
     switch (method) {
       case WebMethod.GET:

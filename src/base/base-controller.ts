@@ -1,5 +1,6 @@
+import { AsyncRequestHandlerErrorWrapper } from '../@types/async-request-handler';
 import { LoggerInstance } from '../services/logger-service';
-import { AsyncRequestHandler, ErrorUtils } from '../utils/error-utils';
+import { ErrorUtils } from '../utils/error-utils';
 import { BaseService } from './base-service';
 
 export abstract class BaseController<Service extends BaseService> {
@@ -7,7 +8,7 @@ export abstract class BaseController<Service extends BaseService> {
 
   readonly service: Service;
 
-  private readonly wrap: (handler: AsyncRequestHandler) => AsyncRequestHandler;
+  private readonly wrap: AsyncRequestHandlerErrorWrapper;
 
   constructor(service: Service) {
     this.service = service;
@@ -15,7 +16,7 @@ export abstract class BaseController<Service extends BaseService> {
     this.wrap = ErrorUtils.getInstance(this.logger).wrap;
   }
 
-  get errorFactory(): (handler: AsyncRequestHandler) => AsyncRequestHandler {
+  get errorFactory(): AsyncRequestHandlerErrorWrapper {
     return this.wrap;
   }
 }

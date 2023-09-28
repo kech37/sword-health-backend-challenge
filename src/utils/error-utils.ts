@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
+import { AsyncRequestHandler } from '../@types/async-request-handler';
+import { HttpErrorCode } from '../@types/http-error-code';
 import { SpecificErrorDescription } from '../@types/specific-error-description';
 import { ApplicationError } from '../errors/models/application-error';
+import { ErrorMapper } from '../mappers/error-mapper';
 import { LoggerInstance } from '../services/logger-service';
-
-export type AsyncRequestHandler = (request: Request, response: Response) => Promise<Response>;
 
 export class ErrorUtils {
   private static instance?: ErrorUtils;
@@ -32,7 +33,22 @@ export class ErrorUtils {
         return await handler(request, response);
       } catch (error) {
         this.logger.error(error);
-        return response.status(500).send(error);
+
+        if (error instanceof ApplicationError) {
+          return response
+            .status(HttpErrorCode.HTTP_500_InternalServerError)
+            .send(ErrorMapper.toHttpErrorResponse(response.locals.requestId, HttpErrorCode.HTTP_500_InternalServerError, error.errorCode, error.message));
+        }
+
+        if (error instanceof Error) {
+          return response
+            .status(HttpErrorCode.HTTP_500_InternalServerError)
+            .send(ErrorMapper.toHttpErrorResponse(response.locals.requestId, HttpErrorCode.HTTP_500_InternalServerError));
+        }
+
+        return response
+          .status(HttpErrorCode.HTTP_500_InternalServerError)
+          .send(ErrorMapper.toHttpErrorResponse(response.locals.requestId, HttpErrorCode.HTTP_500_InternalServerError, 'UNKNOWN_ERROR'));
       }
     };
   }

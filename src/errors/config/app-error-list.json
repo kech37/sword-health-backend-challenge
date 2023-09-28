@@ -14,5 +14,11 @@
       "code": "I-201",
       "description": "Logger_NOT_DEFINED"
     }
+  },
+  "Database": {
+    "NotConfigured": {
+      "code": "I-300",
+      "description": "DATABASE_NOT_CONFIGURED"
+    }
   }
 }
