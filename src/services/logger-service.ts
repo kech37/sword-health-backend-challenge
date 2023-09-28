@@ -1,4 +1,5 @@
 import pino from 'pino';
+import { LogLevel } from '../@types/log-level';
 
 export type LoggerInstance = pino.Logger;
 
@@ -23,11 +24,7 @@ export class LoggerService {
     return instance;
   }
 
-  /**
-   * Set the log level to be used in the newly created instances
-   * Valid values: "fatal" | "error" | "warn" | "info" | "debug" | "trace"
-   */
-  setLogLevel(level: string): void {
+  setLogLevel(level: LogLevel): void {
     this.implementation.level = level;
   }
 }

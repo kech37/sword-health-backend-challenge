@@ -1,12 +1,13 @@
 import { DataSource } from 'typeorm';
+import { Config } from './config';
 
 export const dataSource = new DataSource({
   type: 'mysql',
-  host: process.env.database_host,
-  port: +process.env.database_port!,
-  username: process.env.database_username,
-  password: process.env.database_password,
-  database: process.env.database_database,
+  host: Config.DATABASE.HOST,
+  port: Config.DATABASE.PORT,
+  username: Config.DATABASE.USERNAME,
+  password: Config.DATABASE.PASSWORD,
+  database: Config.DATABASE.DATABASE,
   entities: ['./src/db/entities/*.ts'],
   migrations: ['./src/db/migrations/*.ts'],
   synchronize: true,

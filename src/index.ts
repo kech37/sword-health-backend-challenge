@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import 'reflect-metadata'; // TODO
+import 'reflect-metadata';
 import { SwordHealthBackendChallengeService } from './sword-health-backend-challenge-service';
 
 new SwordHealthBackendChallengeService().run();

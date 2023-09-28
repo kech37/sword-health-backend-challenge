@@ -1,5 +1,6 @@
 import { DataSource, QueryRunner } from 'typeorm';
 import { EventEmitter } from 'typeorm/platform/PlatformTools';
+import { Config } from '../configs/config';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { LifeCycleManager } from './life-cicle-manager';
 
@@ -25,12 +26,11 @@ export class DatabaseService extends LifeCycleManager {
 
     this.dataSource = new DataSource({
       type: 'mysql',
-      host: process.env.database_host,
-      port: +process.env.database_port!,
-      username: process.env.database_username,
-      password: process.env.database_password,
-      database: process.env.database_database,
-
+      host: Config.DATABASE.HOST,
+      port: Config.DATABASE.PORT,
+      username: Config.DATABASE.USERNAME,
+      password: Config.DATABASE.PASSWORD,
+      database: Config.DATABASE.DATABASE,
       entities: ['./db/entities/*.js'],
       migrations: ['./db/migrations/*.js'],
       migrationsRun: true,

@@ -1,3 +1,4 @@
+import { Config } from '../configs/config';
 import { LifeCycleManager } from '../services/life-cicle-manager';
 import { LoggerService } from '../services/logger-service';
 
@@ -13,8 +14,7 @@ export class BaseService {
 
     this.logger = new LoggerService(name);
 
-    // Setup logger
-    this.logger.setLogLevel('trace'); // TODO
+    this.logger.setLogLevel(Config.LOG_LEVEL);
 
     this.lifeCycleManager = new LifeCycleManager(this.logger);
     this.lifeCycleManager.catchSignals();
