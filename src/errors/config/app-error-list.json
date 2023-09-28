@@ -1,0 +1,8 @@
+{
+  "TypeCheck": {
+    "NotAUUID": {
+      "code": "I-100",
+      "description": "VARIABLE_IS_NOT_A_UUID"
+    }
+  }
+}
