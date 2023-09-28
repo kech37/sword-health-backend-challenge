@@ -1,34 +1,33 @@
 import express, { Express } from "express";
 import { SetupController } from "./controllers/setup-controller";
 import { DatabaseService } from "./services/database-service";
+import { LogService } from "./services/log-service";
 
 export class SwordHealthBackendChallengeService {
-  private static instance?: SwordHealthBackendChallengeService;
+  httpService: Express;
 
-  private httpService: Express;
+  databaseService: DatabaseService;
 
   constructor() {
     this.httpService = express();
-  }
+    this.databaseService = new DatabaseService();
 
-  static getInstance(): SwordHealthBackendChallengeService {
-    if (this.instance) {
-      return this.instance;
-    }
-    this.instance = new SwordHealthBackendChallengeService();
-    return this.instance;
-  }
-
-  private setupControllers(): void {
     new SetupController(this.httpService);
   }
 
-  async run(): Promise<void> {
-    await DatabaseService.getInstance().run();
-    this.setupControllers();
-
-    this.httpService.listen(3000, () =>
-      console.log(`Service listening on port: ${3000}`)
-    );
+  async run() {
+    await this.databaseService
+      .run()
+      .then(() =>
+        this.httpService.listen(3000, () => {
+          LogService.getInstance().debug(`Service listening on port: ${3000}`);
+        })
+      )
+      .catch((error) =>
+        LogService.getInstance().error(
+          { error },
+          "SwordHealthBackendChallengeService: run error"
+        )
+      );
   }
 }

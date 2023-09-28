@@ -1,20 +1,20 @@
 import { Express, Request, Response } from "express";
 import { UserFacade } from "../db/facades/user-facade";
+import { LogService } from "../services/log-service";
 
 export class SetupController {
-  constructor(webService: Express) {
-    webService.get("/hello", this.getHello);
+  constructor(httpService: Express) {
+    httpService.get("/hello", this.getHello);
   }
 
   private async getHello(
     _request: Request,
     response: Response
   ): Promise<Response> {
+    LogService.getInstance().info("SetupController: getHello");
     const result = await UserFacade.getInstace().get();
 
-    // eslint-disable-next-line no-console
-    console.log("DEBUG result", result);
-
-    return response.status(200).send(result);
+    LogService.getInstance().info({ result }, "getHello: result");
+    return response.status(200).send("result");
   }
 }
