@@ -15,6 +15,6 @@ export class SetupController {
     const result = await UserFacade.getInstace().get();
 
     LogService.getInstance().info({ result }, "getHello: result");
-    return response.status(200).send("result");
+    return response.status(200).send(result);
   }
 }

@@ -13,11 +13,11 @@ export class UserFacade {
     this.databaseService = baseService.databaseService;
   }
 
-  static getInstace(bs?: SwordHealthBackendChallengeService): UserFacade {
+  static getInstace(): UserFacade {
     if (this.instance) {
       return this.instance;
     }
-    this.instance = new UserFacade(bs ?? baseService);
+    this.instance = new UserFacade(baseService);
     return this.instance;
   }
 
