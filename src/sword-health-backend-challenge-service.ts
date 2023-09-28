@@ -4,7 +4,7 @@ import { BaseService } from './base/base-service';
 import { SetupController } from './controllers/setup-controller';
 import { DatabaseService } from './services/database-service';
 import { WebServerService } from './services/web-server-service';
-import { RequestIdMiddleware } from './web-server/middlewares/request-id-middleware';
+import { RequestIdMiddleware } from './controllers/middlewares/request-id-middleware';
 import { Config } from './configs/config';
 
 export class SwordHealthBackendChallengeService extends BaseService {
