@@ -33,7 +33,7 @@ export class SwordHealthBackendChallengeService extends BaseService {
   }
 
   private setupControllers(): void {
-    this.controllers.push(new SetupController(this));
+    this.controllers.push(SetupController.getInstance(this));
   }
 
   run(): this {

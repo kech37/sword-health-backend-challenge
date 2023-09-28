@@ -4,5 +4,15 @@
       "code": "I-100",
       "description": "VARIABLE_IS_NOT_A_UUID"
     }
+  },
+  "Singleton": {
+    "ServiceNotDefined": {
+      "code": "I-200",
+      "description": "SERVICE_NOT_DEFINED"
+    },
+    "LoggerNotDefined": {
+      "code": "I-201",
+      "description": "Logger_NOT_DEFINED"
+    }
   }
 }
