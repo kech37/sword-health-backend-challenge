@@ -1,5 +1,5 @@
 /// <reference types='../../@types/global' />
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { EncryptionTransformer } from 'typeorm-encrypted';
 import { DatabaseEncryptionTransformerConfig } from '../../configs/database-encryption-transformer-config';
 import { TaskStatus } from '../@types/task-status';
@@ -7,9 +7,8 @@ import { UserEntity } from './user-entity';
 
 @Entity('task', { schema: 'public' })
 export class TaskEntity extends BaseEntity {
-  @PrimaryColumn('uuid', {
+  @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    default: () => '(UUID())',
   })
   id!: UUID;
 

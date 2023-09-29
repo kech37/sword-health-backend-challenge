@@ -19,6 +19,8 @@ export class BaseData1696007803058 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DELETE FROM \`public\`.\`notification\``);
+    await queryRunner.query(`DELETE FROM \`public\`.\`task\``);
     await queryRunner.query(`DELETE FROM \`public\`.\`user\` WHERE \`id\` = '41f71b67-a18c-4374-87a4-b2ed044fdbde'`);
     await queryRunner.query(`DELETE FROM \`public\`.\`user\` WHERE \`id\` = 'fa634d9f-7a47-4efb-b432-812d2b449dd5'`);
     await queryRunner.query(`DELETE FROM \`public\`.\`role\` WHERE \`name\` = 'TECHNICIAN'`);

@@ -3,7 +3,6 @@ import jwt from 'jsonwebtoken';
 import { HttpErrorCode } from '../../@types/http-error-code';
 import { Config } from '../../configs/config';
 import { ApiUnauthorizedErrors } from '../../errors/generic/api-errors';
-import { AppSingletonErrors } from '../../errors/generic/app-errors';
 import { LoggerInstance, LoggerService } from '../../services/logger-service';
 import { ErrorUtils } from '../../utils/error-utils';
 import { TypeUtils } from '../../utils/type-utils';
@@ -13,19 +12,17 @@ export class JwtAuthenticationMiddleware {
 
   private readonly logger: LoggerInstance;
 
-  private constructor(logger: LoggerService) {
+  private constructor() {
+    const logger = new LoggerService(this.constructor.name);
     logger.setLogLevel(Config.JWT_LOG_LEVEL);
-    this.logger = logger.get(this.constructor.name);
+    this.logger = logger.get();
   }
 
-  static getInstance(logger?: LoggerService): JwtAuthenticationMiddleware {
+  static getInstance(): JwtAuthenticationMiddleware {
     if (this.instance) {
       return this.instance;
     }
-    if (!logger) {
-      throw ErrorUtils.createApplicationError(AppSingletonErrors.LoggerNotDefined);
-    }
-    this.instance = new JwtAuthenticationMiddleware(logger);
+    this.instance = new JwtAuthenticationMiddleware();
     return this.instance;
   }
 

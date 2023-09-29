@@ -1,13 +1,12 @@
 /// <reference types='../../@types/global' />
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { NotificationType } from '../@types/notification-type';
 import { UserEntity } from './user-entity';
 
 @Entity('notification', { schema: 'public' })
 export class NotificationEntity extends BaseEntity {
-  @PrimaryColumn('uuid', {
+  @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    default: () => '(UUID())',
   })
   id!: UUID;
 

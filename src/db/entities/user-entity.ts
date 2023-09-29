@@ -1,13 +1,12 @@
 /// <reference types='../../@types/global' />
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { UserRole } from '../@types/user-role';
 import { RoleEntity } from './role-entity';
 
 @Entity('user', { schema: 'public' })
 export class UserEntity extends BaseEntity {
-  @PrimaryColumn('uuid', {
+  @PrimaryGeneratedColumn('uuid', {
     name: 'id',
-    default: () => '(UUID())',
   })
   id!: UUID;
 
