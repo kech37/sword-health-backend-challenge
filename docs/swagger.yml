@@ -1,0 +1,157 @@
+openapi: 3.0.3
+info:
+  title: Task Manager
+  version: 1.0.0
+  description: >-
+    Task Manager developed in the context of the Sword Health Backend Challenge
+    technical challenge
+  contact:
+    email: carlos.p37@gmail.com
+    name: Carlos Pinho
+    url: https://www.linkedin.com/in/cpinho37
+tags:
+  - name: Task
+    description: Operations releated with Tasks
+paths:
+  /task:
+    get:
+      tags:
+        - Task
+      summary: Fetch all tasks
+      description: Allows for the fetch of all tasks available in the system with pagination and filtering
+      operationId: getTasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          description: Number of items to be retrieved per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: skip
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: status
+          description: Filter by task status
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - in: query
+          name: technicianId
+          description: Filter by technician ID
+          required: false
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTasksResponse'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+components:
+  schemas:
+    UUID:
+      type: string
+      description: An UUID
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      format: uuid
+    HttpErrorResponse:
+      type: object
+      properties:
+        requestId:
+          $ref: '#/components/schemas/UUID'
+        httpErrorCode:
+          type: integer
+        httpErrorMessage:
+          type: string
+        applicationErrorCode:
+          type: string
+        applicationErrorMessage:
+          type: string
+      required: [requestId, httpErrorCode, httpErrorMessage]
+    Date:
+      type: string
+      description: ISO 8601 date format
+      pattern: ^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$
+      format: date
+    TaskStatus:
+      type: string
+      enum: [NEW, ON_GOING, COMPLETED]
+    User:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+      required: [id, name]
+    Task:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        summary:
+          type: string
+        manager:
+          $ref: '#/components/schemas/User'
+        technician:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        completedAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, status, summary, manager, technician, createadAt]
+    GetTasksResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          default: 0
+      required: [result, total]
+  responses:
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    500:
+      description: Internal Server Error
+      content:
+        text/plain:
+          schema:
+            type: string
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
