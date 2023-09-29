@@ -25,7 +25,7 @@ paths:
 
         - If the user is a manager he can see all the available tasks
 
-        - It the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
+        - If the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
 
         - Task with archived status will not be displayed
       operationId: getTasks
@@ -114,7 +114,7 @@ paths:
 
         - Manager type users can see any available task
 
-        - Technician type users can see task that they are assign to
+        - Technician type users can see tasks that they are assign to
 
         - Task with archived status will not be displayed
       operationId: getTaskById
@@ -197,7 +197,7 @@ paths:
 
         - Only manager type users can delete tasks
 
-        - Tasks with completed status will not be deleted, but will have their status changed to *archived*
+        - Tasks with completed status will not be deleted but will have their status changed to *archived*
       operationId: deleteTaskById
       security:
         - bearerAuth: []

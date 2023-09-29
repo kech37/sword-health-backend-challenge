@@ -42,7 +42,7 @@ export class Schema1696007755012 implements MigrationInterface {
                 \`id\` varchar(36) NOT NULL,
                 \`summary\` varchar(2500) NOT NULL,
                 \`completed_at\` datetime NULL,
-                \`status\` enum ('NEW', 'ON_GOING', 'COMPLETED') NOT NULL,
+                \`status\` enum ('NEW', 'ON_GOING', 'COMPLETED', 'ARCHIVED') NOT NULL,
                 \`technician_id\` varchar(255) NOT NULL,
                 \`manager_id\` varchar(255) NOT NULL,
                 \`created_at\` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
