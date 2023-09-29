@@ -86,8 +86,8 @@ paths:
             schema:
               $ref: '#/components/schemas/CreateTaskRequestBody'
       responses:
-        200:
-          description: Ok
+        201:
+          description: Created
           content:
             application/json:
               schema:
@@ -105,7 +105,12 @@ paths:
       tags:
         - Task
       summary: Get task
-      description: Allows to get a single task by ID
+      description: >-
+        Allows to get a single task by ID with the following conditions:
+
+        - Manager type users can see any available task
+
+        - Technician type users can see task that they are assign to
       operationId: getTaskById
       security:
         - bearerAuth: []
@@ -169,6 +174,35 @@ paths:
                 $ref: '#/components/schemas/Task'
         400:
           $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - Task
+      summary: Delete task
+      description: >-
+        Allows for the deletion of a task by a given ID with the following conditions:
+
+        - Only manager type users can delete tasks
+      operationId: deleteTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          $ref: '#/components/responses/200'
         401:
           $ref: '#/components/responses/401'
         403:
@@ -265,6 +299,12 @@ components:
         status:
           $ref: '#/components/schemas/TaskStatus'
   responses:
+    200:
+      description: Ok
+      content:
+        text/plain:
+          schema:
+            type: string
     400:
       description: Bad Request
       content:
