@@ -18,7 +18,12 @@ paths:
       tags:
         - Task
       summary: Fetch all tasks
-      description: Allows for the fetch of all tasks available in the system with pagination and filtering
+      description: >-
+        Allows for the fetch of all tasks available in the system with pagination and filtering with the following conditions:
+
+        - If the user is a manager he can see all the available tasks
+
+        - It the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
       operationId: getTasks
       security:
         - bearerAuth: []
@@ -128,7 +133,50 @@ paths:
           $ref: '#/components/responses/404'
         500:
           $ref: '#/components/responses/500'
+    patch:
+      tags:
+        - Task
+      summary: Update task
+      description: >-
+        Allows for the update of a given ID task with the following conditions:
 
+        - The task can only be updated if the status **is not** completed
+
+        - The summary can only be updated if the status **is** new
+
+        - Users can only update tasks where they are the task technicians
+      operationId: updateTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequestBody'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
 components:
   schemas:
     UUID:
@@ -207,6 +255,15 @@ components:
         technicianId:
           $ref: '#/components/schemas/UUID'
       required: [summary]
+    UpdateTaskRequestBody:
+      type: object
+      properties:
+        summary:
+          type: string
+          maxLength: 2500
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/TaskStatus'
   responses:
     400:
       description: Bad Request
@@ -242,7 +299,7 @@ components:
           schema:
             $ref: '#/components/schemas/HttpErrorResponse'
   securitySchemes:
-    bearerAuth: # arbitrary name for the security scheme
+    bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
