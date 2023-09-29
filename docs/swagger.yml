@@ -62,6 +62,39 @@ paths:
           $ref: '#/components/responses/401'
         500:
           $ref: '#/components/responses/500'
+  /task/{id}:
+    get:
+      tags:
+        - Task
+      summary: Get task
+      description: Allows to get a single task by ID
+      operationId: getTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
 components:
   schemas:
     UUID:
@@ -137,6 +170,18 @@ components:
             $ref: '#/components/schemas/HttpErrorResponse'
     401:
       description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    404:
+      description: Not Found
       content:
         application/json:
           schema:
