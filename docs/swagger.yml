@@ -1,0 +1,485 @@
+openapi: 3.0.3
+info:
+  title: Task Manager
+  version: 1.0.0
+  description: >-
+    Task Manager developed in the context of the Sword Health Backend Challenge
+    technical challenge
+  contact:
+    email: carlos.p37@gmail.com
+    name: Carlos Pinho
+    url: https://www.linkedin.com/in/cpinho37
+tags:
+  - name: Task
+    description: Operations releated with Tasks
+  - name: Notification
+    description: Operations releated with Notifications
+paths:
+  /task:
+    get:
+      tags:
+        - Task
+      summary: Fetch all tasks
+      description: >-
+        Allows for the fetch of all tasks available in the system with pagination and filtering with the following conditions:
+
+        - If the user is a manager he can see all the available tasks
+
+        - If the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
+
+        - Task with archived status will not be displayed
+      operationId: getTasks
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          description: Number of items to be retrieved per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: skip
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: status
+          description: Filter by task status
+          required: false
+          schema:
+            $ref: '#/components/schemas/TaskStatus'
+        - in: query
+          name: technicianId
+          description: Filter by technician ID
+          required: false
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetTasksResponse'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+    post:
+      tags:
+        - Task
+      summary: Create task
+      description: >-
+        Allows for the creation of a new task with the following conditions:
+
+        - If the task is created by a manager the _technicianId_ property is mandatory and the user ID will be used in the _managerId_ property (The _managerId_ property in the request body is ignored)
+
+        - If the task is created by a technician the _managerId_ property is mandatory and the user ID will be used in the _technicianId_ property (The _technicianId_ property in the request body is ignored)
+      operationId: createTask
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequestBody'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        500:
+          $ref: '#/components/responses/500'
+  /task/{id}:
+    get:
+      tags:
+        - Task
+      summary: Get task
+      description: >-
+        Allows to get a single task by ID with the following conditions:
+
+        - Manager type users can see any available task
+
+        - Technician type users can see tasks that they are assign to
+
+        - Task with archived status will not be displayed
+      operationId: getTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+    patch:
+      tags:
+        - Task
+      summary: Update task
+      description: >-
+        Allows for the update of a given ID task with the following conditions:
+
+        - The task can only be updated if the status **is not** completed
+
+        - The summary can only be updated if the status **is** new
+
+        - Users can only update tasks where they are the task technicians
+      operationId: updateTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskRequestBody'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+    delete:
+      tags:
+        - Task
+      summary: Delete task
+      description: >-
+        Allows for the deletion of a task by a given ID with the following conditions:
+
+        - Only manager type users can delete tasks
+
+        - Tasks with completed status will not be deleted but will have their status changed to *archived*
+      operationId: deleteTaskById
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Task ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      responses:
+        200:
+          $ref: '#/components/responses/200'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+  /notification:
+    get:
+      tags:
+        - Notification
+      summary: Fetch all new notifications
+      description: >-
+        Allows for the fetch of all new notifications available in the system with pagination with the following conditions:
+
+        - Only manager type users can receive notifications
+
+        - Manager type users can only read notifications addressed to themselves
+
+        - Only notifications that are unread can be retrieved
+      operationId: getNotifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          description: Number of items to be retrieved per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: skip
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNotificationsResponse'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        500:
+          $ref: '#/components/responses/500'
+  /notification/{id}:
+    patch:
+      tags:
+        - Notification
+      summary: Update notification
+      description: >-
+        Allows for the update of notifications by a given ID with the following conditions:
+
+        - Only manager type users can update notifications
+
+        - Manager type users can only update notifications addressed to themselves
+      operationId: updateNotification
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Notificaiton ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotificationRequestBody'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        500:
+          $ref: '#/components/responses/500'
+components:
+  schemas:
+    UUID:
+      type: string
+      description: An UUID
+      pattern: ^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$
+      format: uuid
+    HttpErrorResponse:
+      type: object
+      properties:
+        requestId:
+          $ref: '#/components/schemas/UUID'
+        httpErrorCode:
+          type: integer
+        httpErrorMessage:
+          type: string
+        applicationErrorCode:
+          type: string
+        applicationErrorMessage:
+          type: string
+      required: [requestId, httpErrorCode, httpErrorMessage]
+    Date:
+      type: string
+      description: ISO 8601 date format
+      pattern: ^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$
+      format: date
+    TaskStatus:
+      type: string
+      enum: [NEW, ON_GOING, COMPLETED, ARCHIVED]
+    User:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        name:
+          type: string
+      required: [id, name]
+    TaskSummary:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        summary:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, status, summary, manager, technician, createdAt]
+    Task:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+        summary:
+          type: string
+        manager:
+          $ref: '#/components/schemas/User'
+        technician:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        completedAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, status, summary, manager, technician, createdAt]
+    GetTasksResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        total:
+          type: integer
+          default: 0
+      required: [result, total]
+    CreateTaskRequestBody:
+      type: object
+      properties:
+        summary:
+          type: string
+          maxLength: 2500
+          minLength: 1
+        managerId:
+          $ref: '#/components/schemas/UUID'
+        technicianId:
+          $ref: '#/components/schemas/UUID'
+      required: [summary]
+    UpdateTaskRequestBody:
+      type: object
+      properties:
+        summary:
+          type: string
+          maxLength: 2500
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/TaskStatus'
+    NotificationType:
+      type: string
+      enum: [TASK_COMPLETED]
+    Notification:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        task:
+          $ref: '#/components/schemas/TaskSummary'
+        technician:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        completedAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, type, task, technician, createdAt, completedAt]
+    GetNotificationsResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        total:
+          type: integer
+          default: 0
+      required: [result, total]
+    UpdateNotificationRequestBody:
+      type: object
+      properties:
+        isRead:
+          type: boolean
+  responses:
+    200:
+      description: Ok
+      content:
+        text/plain:
+          schema:
+            type: string
+    400:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    401:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    403:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    404:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+    500:
+      description: Internal Server Error
+      content:
+        text/plain:
+          schema:
+            type: string
+        application/json:
+          schema:
+            $ref: '#/components/schemas/HttpErrorResponse'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

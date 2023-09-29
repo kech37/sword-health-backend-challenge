@@ -138,7 +138,6 @@ export class ErrorMapper {
     httpErrorCode: HttpErrorCode,
     applicationErrorCode?: string,
     applicationErrorMessage?: string,
-    applicationError?: Error,
   ): HttpErrorResponse {
     return {
       requestId,
@@ -146,7 +145,6 @@ export class ErrorMapper {
       httpErrorMessage: this.httpErrorCodeToString(httpErrorCode),
       applicationErrorCode,
       applicationErrorMessage,
-      applicationError,
     };
   }
 }

@@ -5,11 +5,9 @@ export interface HttpErrorResponse {
 
   httpErrorCode: HttpErrorCode;
 
-  httpErrorMessage?: string;
+  httpErrorMessage: string;
 
   applicationErrorCode?: string;
 
   applicationErrorMessage?: string;
-
-  applicationError?: Error;
 }
