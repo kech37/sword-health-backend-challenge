@@ -12,6 +12,8 @@ info:
 tags:
   - name: Task
     description: Operations releated with Tasks
+  - name: Notification
+    description: Operations releated with Notifications
 paths:
   /task:
     get:
@@ -24,6 +26,8 @@ paths:
         - If the user is a manager he can see all the available tasks
 
         - It the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
+
+        - Task with archived status will not be displayed
       operationId: getTasks
       security:
         - bearerAuth: []
@@ -111,6 +115,8 @@ paths:
         - Manager type users can see any available task
 
         - Technician type users can see task that they are assign to
+
+        - Task with archived status will not be displayed
       operationId: getTaskById
       security:
         - bearerAuth: []
@@ -190,6 +196,8 @@ paths:
         Allows for the deletion of a task by a given ID with the following conditions:
 
         - Only manager type users can delete tasks
+
+        - Tasks with completed status will not be deleted, but will have their status changed to *archived*
       operationId: deleteTaskById
       security:
         - bearerAuth: []
@@ -209,6 +217,50 @@ paths:
           $ref: '#/components/responses/403'
         404:
           $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+  /notification:
+    get:
+      tags:
+        - Notification
+      summary: Fetch all new notifications
+      description: >-
+        Allows for the fetch of all new notifications available in the system with pagination with the following conditions:
+
+        - Only manager type users can receive notifications
+
+        - Manager type users can only read notifications addressed to themselves
+
+        - Only notifications that are unread can be retrieved
+      operationId: getNotifications
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          description: Number of items to be retrieved per page
+          required: false
+          schema:
+            type: integer
+            default: 10
+        - in: query
+          name: skip
+          description: Number of items to skip
+          required: false
+          schema:
+            type: integer
+            default: 0
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetNotificationsResponse'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
         500:
           $ref: '#/components/responses/500'
 components:
@@ -239,7 +291,7 @@ components:
       format: date
     TaskStatus:
       type: string
-      enum: [NEW, ON_GOING, COMPLETED]
+      enum: [NEW, ON_GOING, COMPLETED, ARCHIVED]
     User:
       type: object
       properties:
@@ -248,6 +300,16 @@ components:
         name:
           type: string
       required: [id, name]
+    TaskSummary:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        summary:
+          type: string
+        createdAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, status, summary, manager, technician, createdAt]
     Task:
       type: object
       properties:
@@ -265,7 +327,7 @@ components:
           $ref: '#/components/schemas/Date'
         completedAt:
           $ref: '#/components/schemas/Date'
-      required: [id, status, summary, manager, technician, createadAt]
+      required: [id, status, summary, manager, technician, createdAt]
     GetTasksResponse:
       type: object
       properties:
@@ -298,6 +360,36 @@ components:
           minLength: 1
         status:
           $ref: '#/components/schemas/TaskStatus'
+    NotificationType:
+      type: string
+      enum: [TASK_COMPLETED]
+    Notification:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/UUID'
+        type:
+          $ref: '#/components/schemas/NotificationType'
+        task:
+          $ref: '#/components/schemas/TaskSummary'
+        technician:
+          $ref: '#/components/schemas/User'
+        createdAt:
+          $ref: '#/components/schemas/Date'
+        completedAt:
+          $ref: '#/components/schemas/Date'
+      required: [id, type, task, technician, createdAt, completedAt]
+    GetNotificationsResponse:
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        total:
+          type: integer
+          default: 0
+      required: [result, total]
   responses:
     200:
       description: Ok
