@@ -13,7 +13,9 @@ export class Config {
     PORT: env.get('database_port').required().asPortNumber(),
     USERNAME: env.get('database_username').required().asString(),
     PASSWORD: env.get('database_password').required().asString(),
+    ROOT_PASSWORD: env.get('database_root_password').required().asString(),
     DATABASE: env.get('database_database').required().asString(),
+    ENCRYPTION_KEY: env.get('database_encryption_key').required().asString(),
   };
 
   static TOKEN_SCRET = env.get('token_secret').required().asString();

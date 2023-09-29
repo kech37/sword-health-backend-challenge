@@ -8,9 +8,10 @@
     "build:clean": "del-cli dist && npm run build",
     "dev": "npm run build:clean && cd dist/ && clear && dotenv -e ../.env node index.js | npx pino-pretty",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "db-migration:generate": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs migration:generate ./src/db/migrations/%npm_config_name% -d ./src/configs/db-config.ts -p",
-    "db-migration:run": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs -d ./src/configs/db-config.ts migration:run",
-    "db-migration:revert": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs -d ./src/configs/db-config.ts migration:revert",
+    "db-migration:generate": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs migration:generate ./src/db/migrations/%npm_config_name% -d ./src/configs/migrations-database-config.ts -p",
+    "db-migration:run": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs -d ./src/configs/migrations-database-config.ts migration:run",
+    "db-migration:revert": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs -d ./src/configs/migrations-database-config.ts migration:revert",
+    "db-migration:create": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs migration:create ./src/db/migrations/%npm_config_name%",
     "lint": "npx eslint src",
     "checkcode": "npm run lint",
     "lint:fix": "npx eslint --fix src"
@@ -46,6 +47,7 @@
     "pino": "^8.15.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.17",
+    "typeorm-encrypted": "^0.8.0",
     "uuid": "^9.0.1"
   }
 }
