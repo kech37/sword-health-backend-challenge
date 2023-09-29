@@ -261,6 +261,49 @@ paths:
           $ref: '#/components/responses/400'
         401:
           $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        500:
+          $ref: '#/components/responses/500'
+  /notification/{id}:
+    patch:
+      tags:
+        - Notification
+      summary: Update notification
+      description: >-
+        Allows for the update of notifications by a given ID with the following conditions:
+
+        - Only manager type users can update notifications
+
+        - Manager type users can only update notifications addressed to themselves
+      operationId: updateNotification
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          description: Notificaiton ID
+          required: true
+          schema:
+            $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateNotificationRequestBody'
+      responses:
+        200:
+          description: Ok
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+        400:
+          $ref: '#/components/responses/400'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
         500:
           $ref: '#/components/responses/500'
 components:
@@ -390,6 +433,11 @@ components:
           type: integer
           default: 0
       required: [result, total]
+    UpdateNotificationRequestBody:
+      type: object
+      properties:
+        isRead:
+          type: boolean
   responses:
     200:
       description: Ok
