@@ -11,7 +11,7 @@ export class NotificationEntity extends BaseEntity {
   id!: UUID;
 
   @Column('enum', {
-    name: 'status',
+    name: 'type',
     enum: NotificationType,
     nullable: false,
   })
@@ -28,6 +28,13 @@ export class NotificationEntity extends BaseEntity {
     nullable: false,
   })
   metadata!: object;
+
+  @Column('boolean', {
+    name: 'is_read',
+    nullable: false,
+    default: () => false,
+  })
+  isRead!: boolean;
 
   @Column('datetime', {
     name: 'created_at',

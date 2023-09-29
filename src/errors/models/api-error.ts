@@ -9,6 +9,8 @@ export class ApiError extends ApplicationError implements HttpErrorResponse {
 
   httpErrorCode: HttpErrorCode;
 
+  httpErrorMessage: string;
+
   applicationErrorCode: string;
 
   applicationErrorMessage: string;
@@ -21,6 +23,7 @@ export class ApiError extends ApplicationError implements HttpErrorResponse {
     this.requestId = requestId;
 
     this.httpErrorCode = httpErrorCode;
+    this.httpErrorMessage = ErrorMapper.httpErrorCodeToString(httpErrorCode);
 
     this.applicationErrorCode = applicationErrorCode;
     this.applicationErrorMessage = applicationErrorMessage;
