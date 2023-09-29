@@ -1,0 +1,12 @@
+{
+  "Unauthorized": {
+    "MissingAccessToken": {
+      "code": "100",
+      "description": "MISSING_ACCESS_TOKEN"
+    },
+    "InvalidAccessToken": {
+      "code": "101",
+      "description": "INVALID_ACCESS_TOKEN"
+    }
+  }
+}

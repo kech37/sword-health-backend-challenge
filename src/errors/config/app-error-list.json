@@ -1,0 +1,32 @@
+{
+  "TypeCheck": {
+    "NotAUUID": {
+      "code": "I-100",
+      "description": "VARIABLE_IS_NOT_A_UUID"
+    },
+    "NotAValidJwtPayload": {
+      "code": "I-101",
+      "description": "VARIABLE_IS_NOT_A_VALID_JWT_PAYLOAD"
+    },
+    "NotAString": {
+      "code": "I-102",
+      "description": "VARIABLE_IS_NOT_A_STRING"
+    }
+  },
+  "Singleton": {
+    "ServiceNotDefined": {
+      "code": "I-200",
+      "description": "SERVICE_NOT_DEFINED"
+    },
+    "LoggerNotDefined": {
+      "code": "I-201",
+      "description": "Logger_NOT_DEFINED"
+    }
+  },
+  "Database": {
+    "NotConfigured": {
+      "code": "I-300",
+      "description": "DATABASE_NOT_CONFIGURED"
+    }
+  }
+}

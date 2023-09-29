@@ -1,0 +1,4 @@
+/src/db/migrations/**/*
+/src/config/
+docs
+dist
