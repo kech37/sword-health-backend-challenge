@@ -7,6 +7,10 @@
     "NotAValidJwtPayload": {
       "code": "I-101",
       "description": "VARIABLE_IS_NOT_A_VALID_JWT_PAYLOAD"
+    },
+    "NotAString": {
+      "code": "I-102",
+      "description": "VARIABLE_IS_NOT_A_STRING"
     }
   },
   "Singleton": {

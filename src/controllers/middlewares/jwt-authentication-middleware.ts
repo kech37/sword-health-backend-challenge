@@ -2,25 +2,58 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { HttpErrorCode } from '../../@types/http-error-code';
 import { Config } from '../../configs/config';
-import { ErrorMapper } from '../../mappers/error-mapper';
+import { ApiUnauthorizedErrors } from '../../errors/generic/api-errors';
+import { AppSingletonErrors } from '../../errors/generic/app-errors';
+import { LoggerInstance } from '../../services/logger-service';
+import { ErrorUtils } from '../../utils/error-utils';
+import { TypeUtils } from '../../utils/type-utils';
 
-export function JwtAuthenticationMiddleware(request: Request, response: Response, next: NextFunction): Response | void {
-  const authorizationHeader = request.header('authorization');
+export class JwtAuthenticationMiddleware {
+  private static instance?: JwtAuthenticationMiddleware;
 
-  if (!authorizationHeader) {
-    return response
-      .status(HttpErrorCode.HTTP_401_Unauthorized)
-      .send(ErrorMapper.toHttpErrorResponse(response.locals.requestId, HttpErrorCode.HTTP_401_Unauthorized, undefined, 'TOKEN NOT SENT'));
+  private readonly logger: LoggerInstance;
+
+  private constructor(logger: LoggerInstance) {
+    this.logger = logger;
   }
 
-  try {
-    response.locals.jwtPayload = jwt.verify(authorizationHeader.split(' ')[1], Config.TOKEN_SCRET); // TODO Config different secrest?
-  } catch (_error) {
-    // TODO log error
-    return response
-      .status(HttpErrorCode.HTTP_401_Unauthorized)
-      .send(ErrorMapper.toHttpErrorResponse(response.locals.requestId, HttpErrorCode.HTTP_401_Unauthorized, undefined, 'Invalid authorization provided'));
+  static getInstance(logger?: LoggerInstance): JwtAuthenticationMiddleware {
+    if (this.instance) {
+      return this.instance;
+    }
+    if (!logger) {
+      throw ErrorUtils.createApplicationError(AppSingletonErrors.LoggerNotDefined);
+    }
+    this.instance = new JwtAuthenticationMiddleware(logger);
+    return this.instance;
   }
 
-  return next();
+  getMiddleware(request: Request, response: Response, next: NextFunction): Response | void {
+    try {
+      const { requestId } = response.locals;
+      const authorizationHeader = request.header('authorization');
+
+      TypeUtils.assertUUID(requestId);
+      this.logger.debug({ requestId, authorizationHeader }, 'JwtAuthenticationMiddleware: getMiddleware');
+
+      if (!authorizationHeader) {
+        this.logger.debug({ requestId }, 'getMiddleware: token not sent');
+        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_401_Unauthorized, ApiUnauthorizedErrors.MissingAccessToken);
+      }
+
+      try {
+        const accessToken = authorizationHeader.split(' ').pop();
+        TypeUtils.assertString(accessToken);
+
+        response.locals.jwtPayload = jwt.verify(accessToken, Config.TOKEN_SCRET);
+      } catch (error) {
+        this.logger.debug({ requestId, error }, 'getMiddleware: error');
+        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_401_Unauthorized, ApiUnauthorizedErrors.InvalidAccessToken, error);
+      }
+    } catch (error) {
+      return ErrorUtils.handleError(response, error);
+    }
+
+    return next();
+  }
 }

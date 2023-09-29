@@ -17,7 +17,7 @@ export class SetupController extends BaseController<SwordHealthBackendChallengeS
     this.service.getWebServer.on(
       WebMethod.GET,
       '/hello',
-      JwtAuthenticationMiddleware,
+      (req, res, next) => JwtAuthenticationMiddleware.getInstance(this.logger).getMiddleware(req, res, next),
       this.errorFactory((req, res) => SetupController.getInstance().getHello(req, res)),
     );
   }

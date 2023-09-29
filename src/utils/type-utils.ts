@@ -8,6 +8,12 @@ export class TypeUtils {
     return typeof value === 'string';
   }
 
+  static assertString(value: unknown): asserts value is string {
+    if (!TypeUtils.isString(value)) {
+      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAString);
+    }
+  }
+
   static isUUID(value: unknown): value is UUID {
     return this.isString(value) && UuidUtils.isValid(value);
   }
