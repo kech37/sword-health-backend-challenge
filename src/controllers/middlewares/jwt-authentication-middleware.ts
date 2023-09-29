@@ -4,7 +4,7 @@ import { HttpErrorCode } from '../../@types/http-error-code';
 import { Config } from '../../configs/config';
 import { ApiUnauthorizedErrors } from '../../errors/generic/api-errors';
 import { AppSingletonErrors } from '../../errors/generic/app-errors';
-import { LoggerInstance } from '../../services/logger-service';
+import { LoggerInstance, LoggerService } from '../../services/logger-service';
 import { ErrorUtils } from '../../utils/error-utils';
 import { TypeUtils } from '../../utils/type-utils';
 
@@ -13,11 +13,12 @@ export class JwtAuthenticationMiddleware {
 
   private readonly logger: LoggerInstance;
 
-  private constructor(logger: LoggerInstance) {
-    this.logger = logger;
+  private constructor(logger: LoggerService) {
+    logger.setLogLevel(Config.JWT_LOG_LEVEL);
+    this.logger = logger.get(this.constructor.name);
   }
 
-  static getInstance(logger?: LoggerInstance): JwtAuthenticationMiddleware {
+  static getInstance(logger?: LoggerService): JwtAuthenticationMiddleware {
     if (this.instance) {
       return this.instance;
     }
@@ -47,7 +48,7 @@ export class JwtAuthenticationMiddleware {
 
         response.locals.jwtPayload = jwt.verify(accessToken, Config.TOKEN_SCRET);
       } catch (error) {
-        this.logger.debug({ requestId, error }, 'getMiddleware: error');
+        this.logger.error({ requestId, error }, 'getMiddleware: error');
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_401_Unauthorized, ApiUnauthorizedErrors.InvalidAccessToken, error);
       }
     } catch (error) {
