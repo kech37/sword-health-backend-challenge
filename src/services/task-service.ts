@@ -192,4 +192,38 @@ export class TaskService extends BaseController {
 
     return result;
   }
+
+  async delete(requestId: UUID, userId: UUID, id: UUID): Promise<void> {
+    this.logger.info({ requestId, userId, id }, 'TaskService: delete');
+
+    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
+      load: {
+        role: true,
+      },
+    });
+    if (!user) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    if (!user.role) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+    }
+    this.logger.debug({ requestId, user }, 'update: user');
+
+    const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
+    if (!task) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound);
+    }
+    this.logger.debug({ requestId, task }, 'update: task');
+
+    if (!Utils.isManagerRole(user.role) || (Utils.isManagerRole(user.role) && task.managerId !== user.id)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+    }
+
+    if (task.status !== TaskStatus.COMPLETED) {
+      await TaskFacade.getInstance(this.service).delete(requestId, task.id);
+    } else {
+      await TaskFacade.getInstance(this.service).update(requestId, task.id, TaskStatus.ARCHIVED);
+    }
+    this.logger.debug({ requestId }, 'delete: ok');
+  }
 }

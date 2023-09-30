@@ -29,6 +29,10 @@
     "InvalidUpdateTaskRequestBody": {
       "code": "204",
       "description": "INVALID_UPDATE_TASK_REQUEST_BODY"
+    },
+    "InvalidDeleteTaskByIdParams": {
+      "code": "204",
+      "description": "INVALID_DELETE_TASK_BY_ID_PARAMS"
     }
   },
   "NotFound": {

@@ -1,4 +1,5 @@
 import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
+import { DeleteTaskByIdParams } from '../@types/api/delete-task-by-id-params';
 import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
 import { UpdateTaskIdParams } from '../@types/api/update-task-id-params';
 import { UpdateTaskRequestBody } from '../@types/api/update-task-request-body';
@@ -82,5 +83,10 @@ export class TypeUtils {
       (assertedValue.summary === undefined ||
         (this.isString(assertedValue.summary) && assertedValue.summary.length >= 1 && assertedValue.summary.length <= 2500))
     );
+  }
+
+  static isDeleteTaskByIdParams(value: unknown): value is DeleteTaskByIdParams {
+    const assertedValue = value as DeleteTaskByIdParams;
+    return this.isUUID(assertedValue.id);
   }
 }

@@ -93,7 +93,7 @@ export class TaskFacade extends BaseFacade {
     return TaskModel.fromEntity(result);
   }
 
-  async getById(requestId: UUID, id: string): Promise<TaskModel | undefined> {
+  async getById(requestId: UUID, id: UUID): Promise<TaskModel | undefined> {
     this.initRepositories();
     this.logger.info({ requestId, id }, 'TaskFacade: getById');
 
@@ -112,7 +112,7 @@ export class TaskFacade extends BaseFacade {
     return result ? TaskModel.fromEntity(result) : undefined;
   }
 
-  async update(requestId: UUID, id: string, status?: TaskStatus, summary?: string): Promise<TaskModel> {
+  async update(requestId: UUID, id: UUID, status?: TaskStatus, summary?: string): Promise<TaskModel> {
     this.initRepositories();
     this.logger.info({ requestId, id }, 'TaskFacade: update');
 
@@ -139,5 +139,13 @@ export class TaskFacade extends BaseFacade {
     this.logger.debug({ requestId, result }, 'update: result');
 
     return TaskModel.fromEntity(result);
+  }
+
+  async delete(requestId: UUID, id: UUID): Promise<void> {
+    this.initRepositories();
+    this.logger.info({ requestId, id }, 'TaskFacade: delete');
+
+    await this.taskRepository.delete({ id });
+    this.logger.debug({ requestId }, 'TaskFacade: ok');
   }
 }

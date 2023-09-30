@@ -49,6 +49,13 @@ export class TaskController extends BaseController {
       (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
       this.errorFactory((req, res) => TaskController.getInstance().update(req, res)),
     );
+
+    this.webServer.on(
+      WebMethod.DELETE,
+      '/task/:id',
+      (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
+      this.errorFactory((req, res) => TaskController.getInstance().delete(req, res)),
+    );
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): TaskController {
@@ -106,7 +113,7 @@ export class TaskController extends BaseController {
     );
     this.logger.debug({ requestId, result, total }, 'get: result, total');
 
-    return response.status(200).send(ResponseBuilder.toGetTasksResponse(result, total));
+    return response.status(HttpErrorCode.HTTP_200_OK).send(ResponseBuilder.toGetTasksResponse(result, total));
   }
 
   private async create(request: Request, response: Response): Promise<Response> {
@@ -126,7 +133,7 @@ export class TaskController extends BaseController {
     const result = await TaskService.getInstance(this.service).create(requestId, userId, body.summary, body.managerId, body.technicianId);
     this.logger.debug({ requestId, result }, 'create: result');
 
-    return response.status(200).send(ResponseBuilder.toTask(result));
+    return response.status(HttpErrorCode.HTTP_201_Created).send(ResponseBuilder.toTask(result));
   }
 
   private async getById(request: Request, response: Response): Promise<Response> {
@@ -146,7 +153,7 @@ export class TaskController extends BaseController {
     const result = await TaskService.getInstance(this.service).getById(requestId, userId, params.id);
     this.logger.debug({ requestId, result }, 'getById: result');
 
-    return response.status(200).send(ResponseBuilder.toTask(result));
+    return response.status(HttpErrorCode.HTTP_200_OK).send(ResponseBuilder.toTask(result));
   }
 
   private async update(request: Request, response: Response): Promise<Response> {
@@ -169,6 +176,26 @@ export class TaskController extends BaseController {
     const result = await TaskService.getInstance(this.service).update(requestId, userId, params.id, body.status, body.summary);
     this.logger.debug({ requestId, result }, 'update: result');
 
-    return response.status(200).send(ResponseBuilder.toTask(result));
+    return response.status(HttpErrorCode.HTTP_200_OK).send(ResponseBuilder.toTask(result));
+  }
+
+  private async delete(request: Request, response: Response): Promise<Response> {
+    const { requestId, jwtPayload } = response.locals;
+    TypeUtils.assertUUID(requestId);
+
+    TypeUtils.assertJwtPayload(jwtPayload);
+    const { owner: userId } = jwtPayload;
+
+    const { params } = request;
+    if (!TypeUtils.isDeleteTaskByIdParams(params)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidDeleteTaskByIdParams);
+    }
+
+    this.logger.info({ requestId, userId, params }, 'TaskController: delete');
+
+    await TaskService.getInstance(this.service).delete(requestId, userId, params.id);
+    this.logger.info({ requestId }, ' delete: Ok');
+
+    return response.sendStatus(HttpErrorCode.HTTP_200_OK);
   }
 }

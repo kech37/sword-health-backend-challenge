@@ -199,6 +199,8 @@ paths:
 
         - Only manager type users can delete tasks
 
+        - Manager can only delete the task that they manage
+
         - Tasks with completed status will not be deleted but will have their status changed to *archived*
       operationId: deleteTaskById
       security:
