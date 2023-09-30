@@ -27,6 +27,13 @@ export class NotificationController extends BaseController {
       (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
       this.errorFactory((req, res) => NotificationController.getInstance().get(req, res)),
     );
+
+    this.webServer.on(
+      WebMethod.PATCH,
+      '/notification/:id',
+      (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
+      this.errorFactory((req, res) => NotificationController.getInstance().update(req, res)),
+    );
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): NotificationController {
@@ -73,5 +80,29 @@ export class NotificationController extends BaseController {
     this.logger.debug({ requestId, result, total }, 'get: result, total, tasks');
 
     return response.status(HttpErrorCode.HTTP_200_OK).send(ResponseBuilder.toGetNotificationsResponse(result, tasks, total));
+  }
+
+  private async update(request: Request, response: Response): Promise<Response> {
+    const { requestId, jwtPayload } = response.locals;
+    TypeUtils.assertUUID(requestId);
+
+    TypeUtils.assertJwtPayload(jwtPayload);
+    const { owner: userId } = jwtPayload;
+
+    const { params, body } = request;
+    if (!TypeUtils.isUpdateNotificationByIdParams(params)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidUpdateNotificationByIdParams);
+    }
+    if (!TypeUtils.isUpdateNotificationRequestBody(body)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidUpdateNotificationRequestBody);
+    }
+
+    this.logger.info({ requestId, userId, params, body }, 'NotificationController: update');
+
+    const [updatedNotification, task] = await NotificationService.getInstance(this.service).update(requestId, userId, params.id, body.isRead);
+
+    this.logger.debug({ requestId, updatedNotification, task }, 'update: updatedNotification, task');
+
+    return response.status(HttpErrorCode.HTTP_200_OK).send(ResponseBuilder.toNotificationResponse(updatedNotification, [task]));
   }
 }

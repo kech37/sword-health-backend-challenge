@@ -65,4 +65,52 @@ export class NotificationService extends BaseController {
 
     return [{ result: notifications, total }, tasks];
   }
+
+  async update(requestId: UUID, userId: UUID, id: UUID, isRead?: boolean): Promise<[NotificationModel, TaskModel]> {
+    this.logger.info({ requestId, userId, id, isRead }, 'NotificationService: update');
+
+    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
+      load: {
+        role: true,
+      },
+    });
+    if (!user) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    if (!user.role) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+    }
+    this.logger.debug({ requestId, user }, 'update: user');
+
+    if (Utils.isTechnicianRole(user.role)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+    }
+    if (!Utils.isManagerRole(user.role)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
+    }
+
+    const notification = await NotificationFacade.getInstance(this.service).getById(requestId, id);
+    if (!notification) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.NotificationNotFound);
+    }
+    this.logger.debug({ requestId, notification }, 'update: notification');
+
+    if (user.id !== notification.toUserId) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+    }
+
+    const updatedNotification = await NotificationFacade.getInstance(this.service).update(requestId, id, isRead);
+    this.logger.debug({ requestId, updatedNotification }, 'update: updatedNotification');
+
+    if (!updatedNotification.metadata) {
+      throw new Error(); //
+    }
+    const task = await TaskFacade.getInstance(this.service).getById(requestId, updatedNotification.metadata.taskId, true);
+    if (!task) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound);
+    }
+    this.logger.debug({ requestId, task }, 'update: task');
+
+    return [updatedNotification, task];
+  }
 }

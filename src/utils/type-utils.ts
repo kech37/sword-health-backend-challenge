@@ -2,6 +2,8 @@ import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
 import { DeleteTaskByIdParams } from '../@types/api/delete-task-by-id-params';
 import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
 import { Notification, NotificationMetadata } from '../@types/api/notification';
+import { UpdateNotificationRequestBody } from '../@types/api/update-notificaiton-request-body';
+import { UpdateNotificationByIdParams } from '../@types/api/update-notification-by-id-params';
 import { UpdateTaskIdParams } from '../@types/api/update-task-id-params';
 import { UpdateTaskRequestBody } from '../@types/api/update-task-request-body';
 import { JwtPayload } from '../@types/jwt-payload';
@@ -125,5 +127,15 @@ export class TypeUtils {
 
   static getNonNullableArray<T>(array: (T | undefined | null)[]): T[] {
     return array.filter((e) => e) as T[];
+  }
+
+  static isUpdateNotificationByIdParams(value: unknown): value is UpdateNotificationByIdParams {
+    const assertedValue = value as UpdateNotificationByIdParams;
+    return this.isUUID(assertedValue.id);
+  }
+
+  static isUpdateNotificationRequestBody(value: unknown): value is UpdateNotificationRequestBody {
+    const assertedValue = value as UpdateNotificationRequestBody;
+    return assertedValue.isRead === undefined || this.isBoolean(assertedValue.isRead);
   }
 }

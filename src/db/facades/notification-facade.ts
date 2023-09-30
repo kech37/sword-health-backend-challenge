@@ -89,4 +89,43 @@ export class NotificationFacade extends BaseFacade {
 
     return { result: result.map((e) => NotificationModel.fromEntity(e)), total };
   }
+
+  async update(requestId: UUID, id: UUID, isRead?: boolean): Promise<NotificationModel> {
+    this.initRepositories();
+    this.logger.info({ requestId, id }, 'NotificationFacade: update');
+
+    const updateResult = await this.notificationRepository.update(
+      {
+        id,
+      },
+      {
+        isRead,
+      },
+    );
+    this.logger.debug({ requestId, updateResult }, 'update: updateResult');
+
+    const result = await this.notificationRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ requestId, result }, 'update: result');
+
+    return NotificationModel.fromEntity(result);
+  }
+
+  async getById(requestId: UUID, id: UUID): Promise<NotificationModel | undefined> {
+    this.initRepositories();
+
+    this.logger.info({ requestId, id }, 'NotificationFacade: getById');
+
+    const result = await this.notificationRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ requestId, result }, 'getById: result');
+
+    return result ? NotificationModel.fromEntity(result) : undefined;
+  }
 }

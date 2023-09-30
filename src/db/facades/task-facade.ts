@@ -93,7 +93,7 @@ export class TaskFacade extends BaseFacade {
     return TaskModel.fromEntity(result);
   }
 
-  async getById(requestId: UUID, id: UUID): Promise<TaskModel | undefined> {
+  async getById(requestId: UUID, id: UUID, includeArchived = false): Promise<TaskModel | undefined> {
     this.initRepositories();
     this.logger.info({ requestId, id }, 'TaskFacade: getById');
 
@@ -104,7 +104,7 @@ export class TaskFacade extends BaseFacade {
       },
       where: {
         id,
-        status: Not(TaskStatus.ARCHIVED),
+        status: !includeArchived ? Not(TaskStatus.ARCHIVED) : undefined,
       },
     });
     this.logger.debug({ requestId, result }, 'getById: result');

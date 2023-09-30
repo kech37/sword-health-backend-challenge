@@ -4,7 +4,7 @@ import { Task } from '../@types/api/task';
 import { TaskSummary } from '../@types/api/task-summary';
 import { User } from '../@types/api/user';
 import { PaginatedResponse } from '../@types/paginated-response';
-import { AppDatabaseErrors } from '../errors/generic/app-errors';
+import { AppDatabaseErrors, AppResponseBuilderErrors } from '../errors/generic/app-errors';
 import { NotificationModel } from '../models/notification-model';
 import { TaskModel } from '../models/task-model';
 import { UserModel } from '../models/user-model';
@@ -44,6 +44,7 @@ export class ResponseBuilder {
   static toTaskSummary(taskModel: TaskModel): TaskSummary {
     return {
       id: taskModel.id,
+      status: taskModel.status,
       summary: taskModel.summary,
       createdAt: taskModel.createdAt.toISOString(),
     };
@@ -52,10 +53,10 @@ export class ResponseBuilder {
   static toNotificationResponse(notificationModel: NotificationModel, tasksModels: TaskModel[]): NotificationResponse {
     const task = tasksModels.find((e) => e.id === notificationModel.metadata?.taskId);
     if (!task) {
-      throw new Error(); // TODO
+      throw ErrorUtils.createApplicationError(AppResponseBuilderErrors.TaskNotFound);
     }
     if (!task.technician) {
-      throw new Error(); // TODO
+      throw ErrorUtils.createApplicationError(AppResponseBuilderErrors.UserNotDefined);
     }
 
     return {
