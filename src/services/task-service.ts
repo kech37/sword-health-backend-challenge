@@ -188,6 +188,12 @@ export class TaskService extends BaseController {
     if (result.status === TaskStatus.COMPLETED) {
       const notification = await NotificationFacade.getInstance(this.service).create(requestId, task);
       this.logger.debug({ requestId, notification }, 'update: notification');
+      // TODO better this
+      this.service.getMsgBroker.channels['main-channel'].publishMessage(
+        'notification',
+        `notification.center.${notification.toUserId}`,
+        JSON.stringify(notification),
+      );
     }
 
     return result;

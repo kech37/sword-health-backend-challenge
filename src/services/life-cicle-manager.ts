@@ -26,19 +26,17 @@ export class LifeCycleManager implements LifeCycleInterface {
   }
 
   async start(): Promise<void> {
-    await Promise.all(
-      this.services.map(async (e) => {
-        await e.start();
-      }),
-    );
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const service of this.services) {
+      await service.start();
+    }
   }
 
   async stop(): Promise<void> {
-    await Promise.all(
-      this.services.reverse().map(async (e) => {
-        await e.stop();
-      }),
-    );
+    // eslint-disable-next-line no-restricted-syntax
+    for await (const service of this.services.reverse()) {
+      await service.stop();
+    }
   }
 
   catchSignals(): void {

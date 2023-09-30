@@ -4,8 +4,10 @@ import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
 import { UpdateTaskIdParams } from '../@types/api/update-task-id-params';
 import { UpdateTaskRequestBody } from '../@types/api/update-task-request-body';
 import { JwtPayload } from '../@types/jwt-payload';
+import { NotificationType } from '../db/@types/notification-type';
 import { TaskStatus } from '../db/@types/task-status';
 import { AppTypeCheckErrors } from '../errors/generic/app-errors';
+import { NotificationModel } from '../models/notification-model';
 import { ErrorUtils } from './error-utils';
 import { UuidUtils } from './uuid-utils';
 
@@ -88,5 +90,11 @@ export class TypeUtils {
   static isDeleteTaskByIdParams(value: unknown): value is DeleteTaskByIdParams {
     const assertedValue = value as DeleteTaskByIdParams;
     return this.isUUID(assertedValue.id);
+  }
+
+  static isNotificationModel(value: unknown): value is NotificationModel {
+    // TODO complete
+    const assertedValue = value as NotificationModel;
+    return this.isUUID(assertedValue.id) && assertedValue.type === NotificationType.TASK_COMPLETED && this.isUUID(assertedValue.toUserId);
   }
 }

@@ -18,5 +18,12 @@ export class Config {
     ENCRYPTION_KEY: env.get('database_encryption_key').required().asString(),
   };
 
+  static MESSAGE_BROKER = {
+    HOST: env.get('message_broker_host').required().asString(),
+    PORT: env.get('message_broker_port').required().asPortNumber(),
+    USERNAME: env.get('message_broker_username').required().asString(),
+    PASSWORD: env.get('message_broker_password').required().asString(),
+  };
+
   static TOKEN_SCRET = env.get('token_secret').required().asString();
 }
