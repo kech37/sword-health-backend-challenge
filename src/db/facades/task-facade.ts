@@ -1,10 +1,11 @@
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { BaseFacade } from '../../base/base-facade';
 import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
 import { TaskModel } from '../../models/task-model';
 import { SwordHealthBackendChallengeService } from '../../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../../utils/error-utils';
 import { TypeUtils } from '../../utils/type-utils';
+import { TaskStatus } from '../@types/task-status';
 import { TaskEntity } from '../entities/task-entity';
 
 export class TaskFacade extends BaseFacade {
@@ -41,7 +42,6 @@ export class TaskFacade extends BaseFacade {
 
   async create(requestId: UUID, summary: string, managerId: UUID, technicianId: UUID): Promise<TaskModel> {
     this.initRepositories();
-
     this.logger.info({ requestId, summary, managerId, technicianId }, 'TaskFacade: create');
 
     const insertedResult = await this.taskRepository.insert({
@@ -49,7 +49,7 @@ export class TaskFacade extends BaseFacade {
       managerId,
       technicianId,
     });
-    this.logger.debug({ insertedResult }, 'create: insertedResult');
+    this.logger.debug({ requestId, insertedResult }, 'create: insertedResult');
 
     const { id } = insertedResult.identifiers[0];
     TypeUtils.assertUUID(id);
@@ -63,8 +63,27 @@ export class TaskFacade extends BaseFacade {
         id,
       },
     });
-    this.logger.debug({ insertedResult }, 'create: result');
+    this.logger.debug({ requestId, result }, 'create: result');
 
     return TaskModel.fromEntity(result);
+  }
+
+  async getById(requestId: UUID, id: string): Promise<TaskModel | undefined> {
+    this.initRepositories();
+    this.logger.info({ requestId, id }, 'TaskFacade: getById');
+
+    const result = await this.taskRepository.findOne({
+      relations: {
+        manager: true,
+        technician: true,
+      },
+      where: {
+        id,
+        status: Not(TaskStatus.ARCHIVED),
+      },
+    });
+    this.logger.debug({ requestId, result }, 'getById: result');
+
+    return result ? TaskModel.fromEntity(result) : undefined;
   }
 }

@@ -26,6 +26,13 @@ export class TaskController extends BaseController {
       (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
       this.errorFactory((req, res) => TaskController.getInstance().create(req, res)),
     );
+
+    this.webServer.on(
+      WebMethod.GET,
+      '/task/:id',
+      (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
+      this.errorFactory((req, res) => TaskController.getInstance().getById(req, res)),
+    );
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): TaskController {
@@ -55,6 +62,26 @@ export class TaskController extends BaseController {
 
     const result = await TaskService.getInstance(this.service).create(requestId, userId, body.summary, body.managerId, body.technicianId);
     this.logger.debug({ requestId, result }, 'create: result');
+
+    return response.status(200).send(ResponseBuilder.toTask(result));
+  }
+
+  private async getById(request: Request, response: Response): Promise<Response> {
+    const { requestId, jwtPayload } = response.locals;
+    TypeUtils.assertUUID(requestId);
+
+    TypeUtils.assertJwtPayload(jwtPayload);
+    const { owner: userId } = jwtPayload;
+
+    const { params } = request;
+    if (!TypeUtils.isGetTaskByIdParams(params)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidGetTaskByIdParams);
+    }
+
+    this.logger.info({ requestId, userId, params }, 'TaskController: getById');
+
+    const result = await TaskService.getInstance(this.service).getById(requestId, userId, params.id);
+    this.logger.debug({ requestId, result }, 'getById: result');
 
     return response.status(200).send(ResponseBuilder.toTask(result));
   }

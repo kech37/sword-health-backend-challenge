@@ -75,4 +75,41 @@ export class TaskService extends BaseController {
 
     throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
   }
+
+  async getById(requestId: UUID, userId: UUID, id: UUID): Promise<TaskModel> {
+    this.logger.info({ requestId, userId, id }, 'TaskService: getById');
+
+    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
+      load: {
+        role: true,
+      },
+    });
+    if (!user) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    if (!user.role) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+    }
+    this.logger.debug({ requestId, user }, 'getById: user');
+
+    const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
+    if (!task) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound);
+    }
+    this.logger.debug({ requestId, task }, 'getById: task');
+
+    if (Utils.isManagerRole(user.role)) {
+      return task;
+    }
+
+    if (Utils.isTechnicianRole(user.role)) {
+      if (task.technicianId === user.id) {
+        return task;
+      }
+
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.NotAllowedToViewTask);
+    }
+
+    throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
+  }
 }

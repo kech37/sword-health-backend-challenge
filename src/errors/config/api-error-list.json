@@ -13,18 +13,30 @@
     "InvalidCreateTaskRequestBody": {
       "code": "200",
       "description": "INVALID_CREATE_TASK_REQUEST_BODY"
+    },
+    "InvalidGetTaskByIdParams": {
+      "code": "201",
+      "description": "INVALID_GET_TASK_BY_ID_PARAMS"
     }
   },
   "NotFound": {
     "UserNotFound": {
       "code": "300",
       "description": "USER_NOT_FOUND"
+    },
+    "TaskNotFound": {
+      "code": "301",
+      "description": "TASK_NOT_FOUND"
     }
   },
   "Forbidden": {
     "UnableToDetermineRole": {
       "code": "401",
       "description": "UNABLE_TO_DETERMINE_ROLE"
+    },
+    "NotAllowedToViewTask": {
+      "code": "402",
+      "description": "NOT_ALLOWED_TO_VIEW_TASK"
     }
   }
 }

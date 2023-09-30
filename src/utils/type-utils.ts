@@ -1,4 +1,5 @@
 import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
+import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
 import { JwtPayload } from '../@types/jwt-payload';
 import { AppTypeCheckErrors } from '../errors/generic/app-errors';
 import { ErrorUtils } from './error-utils';
@@ -45,5 +46,10 @@ export class TypeUtils {
       (assertedValue.managerId === undefined || this.isUUID(assertedValue.managerId)) &&
       (assertedValue.technicianId === undefined || this.isUUID(assertedValue.technicianId))
     );
+  }
+
+  static isGetTaskByIdParams(value: unknown): value is GetTaskByIdParams {
+    const assertedValue = value as GetTaskByIdParams;
+    return this.isUUID(assertedValue.id);
   }
 }
