@@ -1,4 +1,4 @@
-import { Not, Repository } from 'typeorm';
+import { In, Not, Repository } from 'typeorm';
 import { PaginatedResponse } from '../../@types/paginated-response';
 import { BaseFacade } from '../../base/base-facade';
 import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
@@ -147,5 +147,23 @@ export class TaskFacade extends BaseFacade {
 
     await this.taskRepository.delete({ id });
     this.logger.debug({ requestId }, 'TaskFacade: ok');
+  }
+
+  async getSet(requestId: UUID, ids: UUID[]): Promise<TaskModel[]> {
+    this.initRepositories();
+    this.logger.info({ requestId, ids }, 'TaskFacade: getSet');
+
+    const result = await this.taskRepository.find({
+      relations: {
+        manager: true,
+        technician: true,
+      },
+      where: {
+        id: In(ids),
+      },
+    });
+    this.logger.debug({ requestId, result }, 'getSet: result');
+
+    return result.map((e) => TaskModel.fromEntity(e));
   }
 }

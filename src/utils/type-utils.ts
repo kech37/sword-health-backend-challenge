@@ -122,4 +122,8 @@ export class TypeUtils {
       throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAValidNotification);
     }
   }
+
+  static getNonNullableArray<T>(array: (T | undefined | null)[]): T[] {
+    return array.filter((e) => e) as T[];
+  }
 }

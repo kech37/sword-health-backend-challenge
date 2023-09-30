@@ -4,6 +4,7 @@ import { DataSource } from 'typeorm';
 import { BaseController } from './base/base-controller';
 import { Config } from './configs/config';
 import { RequestIdMiddleware } from './controllers/middlewares/request-id-middleware';
+import { NotificationController } from './controllers/notification-controller';
 import { TaskController } from './controllers/task-controller';
 import { DatabaseService } from './services/database-service';
 import { LifeCycleManager } from './services/life-cicle-manager';
@@ -61,6 +62,7 @@ export class SwordHealthBackendChallengeService {
 
   private setupControllers(): void {
     this.controllers.push(TaskController.getInstance(this));
+    this.controllers.push(NotificationController.getInstance(this));
   }
 
   async run(): Promise<this> {
