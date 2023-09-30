@@ -1,5 +1,7 @@
+import { NotificationMetadata } from '../@types/api/notification';
 import { NotificationType } from '../db/@types/notification-type';
 import { NotificationEntity } from '../db/entities/notification-entity';
+import { TypeUtils } from '../utils/type-utils';
 
 export class NotificationModel {
   id: UUID;
@@ -8,7 +10,7 @@ export class NotificationModel {
 
   toUserId: UUID;
 
-  metadata: object;
+  metadata?: NotificationMetadata;
 
   isRead: boolean;
 
@@ -18,9 +20,11 @@ export class NotificationModel {
     this.id = id;
     this.type = type;
     this.toUserId = toUserId;
-    this.metadata = metadata;
     this.isRead = isRead;
     this.createdAt = createadAt;
+    if (TypeUtils.isNotificationMetadata(metadata)) {
+      this.metadata = metadata;
+    }
   }
 
   static fromEntity(entity: NotificationEntity): NotificationModel {

@@ -355,11 +355,13 @@ components:
       properties:
         id:
           $ref: '#/components/schemas/UUID'
+        status:
+          $ref: '#/components/schemas/TaskStatus'
         summary:
           type: string
         createdAt:
           $ref: '#/components/schemas/Date'
-      required: [id, status, summary, manager, technician, createdAt]
+      required: [id, status, summary, createdAt]
     Task:
       type: object
       properties:

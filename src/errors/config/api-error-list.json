@@ -33,6 +33,14 @@
     "InvalidDeleteTaskByIdParams": {
       "code": "204",
       "description": "INVALID_DELETE_TASK_BY_ID_PARAMS"
+    },
+    "InvalidUpdateNotificationByIdParams": {
+      "code": "205",
+      "description": "INVALID_UPDATE_NOTIFICATION_BY_ID_PARAMS"
+    },
+    "InvalidUpdateNotificationRequestBody": {
+      "code": "207",
+      "description": "INVALID_UPDATE_NOTIFICATION_REQUEST_BODY"
     }
   },
   "NotFound": {
@@ -43,6 +51,10 @@
     "TaskNotFound": {
       "code": "301",
       "description": "TASK_NOT_FOUND"
+    },
+    "NotificationNotFound": {
+      "code": "302",
+      "description": "NOTIFICATION_NOT_FOUND"
     }
   },
   "Forbidden": {

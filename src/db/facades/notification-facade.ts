@@ -1,4 +1,5 @@
 import { Repository } from 'typeorm';
+import { PaginatedResponse } from '../../@types/paginated-response';
 import { BaseFacade } from '../../base/base-facade';
 import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
 import { NotificationModel } from '../../models/notification-model';
@@ -66,5 +67,65 @@ export class NotificationFacade extends BaseFacade {
     this.logger.debug({ requestId, result }, 'create: result');
 
     return NotificationModel.fromEntity(result);
+  }
+
+  async get(requestId: UUID, limit: number, skip: number, userId?: UUID, isRead?: boolean): Promise<PaginatedResponse<NotificationModel>> {
+    this.initRepositories();
+
+    this.logger.info({ requestId, userId, isRead }, 'NotificationFacade: get');
+
+    const [result, total] = await this.notificationRepository.findAndCount({
+      where: {
+        toUserId: userId,
+        isRead,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      skip,
+      take: limit,
+    });
+    this.logger.debug({ requestId, result, total }, 'create: result');
+
+    return { result: result.map((e) => NotificationModel.fromEntity(e)), total };
+  }
+
+  async update(requestId: UUID, id: UUID, isRead?: boolean): Promise<NotificationModel> {
+    this.initRepositories();
+    this.logger.info({ requestId, id }, 'NotificationFacade: update');
+
+    const updateResult = await this.notificationRepository.update(
+      {
+        id,
+      },
+      {
+        isRead,
+      },
+    );
+    this.logger.debug({ requestId, updateResult }, 'update: updateResult');
+
+    const result = await this.notificationRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ requestId, result }, 'update: result');
+
+    return NotificationModel.fromEntity(result);
+  }
+
+  async getById(requestId: UUID, id: UUID): Promise<NotificationModel | undefined> {
+    this.initRepositories();
+
+    this.logger.info({ requestId, id }, 'NotificationFacade: getById');
+
+    const result = await this.notificationRepository.findOne({
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ requestId, result }, 'getById: result');
+
+    return result ? NotificationModel.fromEntity(result) : undefined;
   }
 }

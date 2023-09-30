@@ -56,5 +56,15 @@
       "code": "I-501",
       "description": "CHANNEL_NOT_FOUND"
     }
+  },
+  "ResponseBuilder": {
+    "TaskNotFound": {
+      "code": "I-601",
+      "description": "TASK_NOT_FOUND"
+    },
+    "UserNotDefined": {
+      "code": "I-602",
+      "description": "USER_NOT_FOUND"
+    }
   }
 }
