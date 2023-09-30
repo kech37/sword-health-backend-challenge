@@ -1,0 +1,70 @@
+import { Repository } from 'typeorm';
+import { BaseFacade } from '../../base/base-facade';
+import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
+import { TaskModel } from '../../models/task-model';
+import { SwordHealthBackendChallengeService } from '../../sword-health-backend-challenge-service';
+import { ErrorUtils } from '../../utils/error-utils';
+import { TypeUtils } from '../../utils/type-utils';
+import { TaskEntity } from '../entities/task-entity';
+
+export class TaskFacade extends BaseFacade {
+  private static instance?: TaskFacade;
+
+  private taskRepository!: Repository<TaskEntity>;
+
+  private constructor(service: SwordHealthBackendChallengeService) {
+    super(service);
+  }
+
+  static getInstance(service?: SwordHealthBackendChallengeService): TaskFacade {
+    if (this.instance) {
+      return this.instance;
+    }
+    if (!service) {
+      throw ErrorUtils.createApplicationError(AppSingletonErrors.ServiceNotDefined);
+    }
+    this.instance = new TaskFacade(service);
+    return this.instance;
+  }
+
+  initRepositories(): void {
+    if (this.taskRepository) {
+      return;
+    }
+
+    if (!this.dataSource.isInitialized) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.NotConfigured);
+    }
+
+    this.taskRepository = this.dataSource.getRepository(TaskEntity);
+  }
+
+  async create(requestId: UUID, summary: string, managerId: UUID, technicianId: UUID): Promise<TaskModel> {
+    this.initRepositories();
+
+    this.logger.info({ requestId, summary, managerId, technicianId }, 'TaskFacade: create');
+
+    const insertedResult = await this.taskRepository.insert({
+      summary,
+      managerId,
+      technicianId,
+    });
+    this.logger.debug({ insertedResult }, 'create: insertedResult');
+
+    const { id } = insertedResult.identifiers[0];
+    TypeUtils.assertUUID(id);
+
+    const result = await this.taskRepository.findOneOrFail({
+      relations: {
+        manager: true,
+        technician: true,
+      },
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ insertedResult }, 'create: result');
+
+    return TaskModel.fromEntity(result);
+  }
+}

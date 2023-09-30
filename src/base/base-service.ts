@@ -1,32 +1,10 @@
-import { Config } from '../configs/config';
-import { LifeCycleManager } from '../services/life-cicle-manager';
-import { LoggerService } from '../services/logger-service';
+import { LoggerInstance } from '../services/logger-service';
+import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 
-export class BaseService {
-  name: string;
+export abstract class BaseService {
+  readonly logger: LoggerInstance;
 
-  logger: LoggerService;
-
-  lifeCycleManager: LifeCycleManager;
-
-  constructor(name: string) {
-    this.name = name;
-
-    this.logger = new LoggerService(name);
-
-    this.logger.setLogLevel(Config.LOG_LEVEL);
-
-    this.lifeCycleManager = new LifeCycleManager(this.logger);
-    this.lifeCycleManager.catchSignals();
-  }
-
-  run(): this {
-    this.lifeCycleManager.start();
-    return this;
-  }
-
-  stop(): this {
-    this.lifeCycleManager.stop();
-    return this;
+  constructor(service: SwordHealthBackendChallengeService) {
+    this.logger = service.getLogger.get(this.constructor.name);
   }
 }

@@ -2,22 +2,32 @@ import { json } from 'express';
 import bearerToken from 'express-bearer-token';
 import { DataSource } from 'typeorm';
 import { BaseController } from './base/base-controller';
-import { BaseService } from './base/base-service';
 import { Config } from './configs/config';
 import { RequestIdMiddleware } from './controllers/middlewares/request-id-middleware';
-import { SetupController } from './controllers/setup-controller';
+import { TaskController } from './controllers/task-controller';
 import { DatabaseService } from './services/database-service';
+import { LifeCycleManager } from './services/life-cicle-manager';
+import { LoggerService } from './services/logger-service';
 import { WebServerService } from './services/web-server-service';
 
-export class SwordHealthBackendChallengeService extends BaseService {
+export class SwordHealthBackendChallengeService {
+  private readonly logger: LoggerService;
+
+  private readonly lifeCycleManager: LifeCycleManager;
+
   private readonly webServer: WebServerService;
 
   private readonly dataSource: DatabaseService;
 
-  private controllers: BaseController<SwordHealthBackendChallengeService>[];
+  private controllers: BaseController[];
 
   constructor() {
-    super('Sword-Health-Backend-Challenge-Service');
+    this.logger = new LoggerService(this.constructor.name);
+
+    this.logger.setLogLevel(Config.LOG_LEVEL);
+
+    this.lifeCycleManager = new LifeCycleManager(this.logger);
+    this.lifeCycleManager.catchSignals();
 
     this.dataSource = this.lifeCycleManager.addService(new DatabaseService(this));
     this.webServer = this.lifeCycleManager.addService(new WebServerService(this, Config.HTTP_SERVER_PORT));
@@ -29,6 +39,10 @@ export class SwordHealthBackendChallengeService extends BaseService {
     this.controllers = [];
   }
 
+  get getLogger(): LoggerService {
+    return this.logger;
+  }
+
   get getWebServer(): WebServerService {
     return this.webServer;
   }
@@ -38,11 +52,11 @@ export class SwordHealthBackendChallengeService extends BaseService {
   }
 
   private setupControllers(): void {
-    this.controllers.push(SetupController.getInstance(this));
+    this.controllers.push(TaskController.getInstance(this));
   }
 
   run(): this {
-    super.run();
+    this.lifeCycleManager.start();
 
     this.setupControllers();
 

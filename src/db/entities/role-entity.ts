@@ -37,23 +37,23 @@ export class RoleEntity extends BaseEntity {
     name: 'can_global_create',
     nullable: false,
   })
-  canGlobakCreate!: boolean;
+  canGlobalCreate!: boolean;
 
   @Column('boolean', {
     name: 'can_global_read',
     nullable: false,
   })
-  canGlobakRead!: boolean;
+  canGlobalRead!: boolean;
 
   @Column('boolean', {
     name: 'can_global_update',
     nullable: false,
   })
-  canGlobakUpdate!: boolean;
+  canGlobalUpdate!: boolean;
 
   @Column('boolean', {
     name: 'can_global_delete',
     nullable: false,
   })
-  canGlobakDelete!: boolean;
+  canGlobalDelete!: boolean;
 }

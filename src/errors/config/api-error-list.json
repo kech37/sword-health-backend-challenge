@@ -8,5 +8,23 @@
       "code": "101",
       "description": "INVALID_ACCESS_TOKEN"
     }
+  },
+  "BadRequest": {
+    "InvalidCreateTaskRequestBody": {
+      "code": "200",
+      "description": "INVALID_CREATE_TASK_REQUEST_BODY"
+    }
+  },
+  "NotFound": {
+    "UserNotFound": {
+      "code": "300",
+      "description": "USER_NOT_FOUND"
+    }
+  },
+  "Forbidden": {
+    "UnableToDetermineRole": {
+      "code": "401",
+      "description": "UNABLE_TO_DETERMINE_ROLE"
+    }
   }
 }

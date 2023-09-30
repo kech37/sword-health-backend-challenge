@@ -29,6 +29,7 @@ export class TaskEntity extends BaseEntity {
   @Column('enum', {
     name: 'status',
     enum: TaskStatus,
+    default: TaskStatus.NEW,
     nullable: false,
   })
   status!: TaskStatus;

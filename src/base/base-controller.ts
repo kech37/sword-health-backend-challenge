@@ -1,18 +1,19 @@
 import { AsyncRequestHandlerErrorWrapper } from '../@types/async-request-handler';
 import { LoggerInstance } from '../services/logger-service';
+import { WebServerService } from '../services/web-server-service';
+import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../utils/error-utils';
-import { BaseService } from './base-service';
 
-export abstract class BaseController<Service extends BaseService> {
+export abstract class BaseController {
   readonly logger: LoggerInstance;
 
-  readonly service: Service;
+  readonly webServer: WebServerService;
 
   private readonly wrap: AsyncRequestHandlerErrorWrapper;
 
-  constructor(service: Service) {
-    this.service = service;
-    this.logger = this.service.logger.get(this.constructor.name);
+  constructor(service: SwordHealthBackendChallengeService) {
+    this.logger = service.getLogger.get(this.constructor.name);
+    this.webServer = service.getWebServer;
     this.wrap = ErrorUtils.getInstance(this.logger).wrap;
   }
 

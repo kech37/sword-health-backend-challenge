@@ -1,13 +1,14 @@
+import { DataSource } from 'typeorm';
 import { LoggerInstance } from '../services/logger-service';
-import { BaseService } from './base-service';
+import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 
-export abstract class BaseFacade<Service extends BaseService> {
+export abstract class BaseFacade {
   readonly logger: LoggerInstance;
 
-  readonly service: Service;
+  readonly dataSource: DataSource;
 
-  constructor(service: Service) {
-    this.service = service;
-    this.logger = this.service.logger.get(this.constructor.name);
+  constructor(service: SwordHealthBackendChallengeService) {
+    this.logger = service.getLogger.get(this.constructor.name);
+    this.dataSource = service.getDataSource;
   }
 }

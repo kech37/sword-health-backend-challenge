@@ -27,6 +27,16 @@
     "NotConfigured": {
       "code": "I-300",
       "description": "DATABASE_NOT_CONFIGURED"
+    },
+    "Relations": {
+      "RoleNotLoaded": {
+        "code": "I-301",
+        "description": "ROLE_NOT_LOADED"
+      },
+      "UserNotLoaded": {
+        "code": "I-302",
+        "description": "USER_NOT_LOADED"
+      }
     }
   }
 }
