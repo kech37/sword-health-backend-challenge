@@ -1,11 +1,14 @@
 import { Repository } from 'typeorm';
 import { BaseFacade } from '../../base/base-facade';
 import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
+import { UserModel } from '../../models/user-model';
 import { SwordHealthBackendChallengeService } from '../../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../../utils/error-utils';
 import { UserEntity } from '../entities/user-entity';
 
-export class UserFacade extends BaseFacade<SwordHealthBackendChallengeService> {
+type GetByIdOptions = { load?: { role?: boolean } };
+
+export class UserFacade extends BaseFacade {
   private static instance?: UserFacade;
 
   private userRepository!: Repository<UserEntity>;
@@ -30,21 +33,28 @@ export class UserFacade extends BaseFacade<SwordHealthBackendChallengeService> {
       return;
     }
 
-    if (!this.service.getDataSource.isInitialized) {
+    if (!this.dataSource.isInitialized) {
       throw ErrorUtils.createApplicationError(AppDatabaseErrors.NotConfigured);
     }
 
-    this.userRepository = this.service.getDataSource.getRepository(UserEntity);
+    this.userRepository = this.dataSource.getRepository(UserEntity);
   }
 
-  async get(requestId: UUID): Promise<UserEntity[]> {
+  async getById(requestId: UUID, id: UUID, options?: GetByIdOptions): Promise<UserModel | undefined> {
     this.initRepositories();
 
-    this.logger.info({ requestId }, 'UserFacade: get');
+    this.logger.info({ requestId, id }, 'UserFacade: getById');
 
-    const result = await this.userRepository.find();
+    const result = await this.userRepository.findOne({
+      relations: {
+        role: options?.load?.role,
+      },
+      where: {
+        id,
+      },
+    });
     this.logger.debug({ result }, 'get: result');
 
-    return result;
+    return result ? UserModel.fromEntity(result) : undefined;
   }
 }

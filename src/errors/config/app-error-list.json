@@ -11,6 +11,10 @@
     "NotAString": {
       "code": "I-102",
       "description": "VARIABLE_IS_NOT_A_STRING"
+    },
+    "NotAValidStringNonNegativeInteger": {
+      "code": "I-103",
+      "description": "NOT_A_VALID_STRING_NON_NEGATIVE_INTEGER"
     }
   },
   "Singleton": {
@@ -27,6 +31,16 @@
     "NotConfigured": {
       "code": "I-300",
       "description": "DATABASE_NOT_CONFIGURED"
+    },
+    "Relations": {
+      "RoleNotLoaded": {
+        "code": "I-301",
+        "description": "ROLE_NOT_LOADED"
+      },
+      "UserNotLoaded": {
+        "code": "I-302",
+        "description": "USER_NOT_LOADED"
+      }
     }
   }
 }

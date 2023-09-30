@@ -8,5 +8,51 @@
       "code": "101",
       "description": "INVALID_ACCESS_TOKEN"
     }
+  },
+  "BadRequest": {
+    "InvalidCreateTaskRequestBody": {
+      "code": "200",
+      "description": "INVALID_CREATE_TASK_REQUEST_BODY"
+    },
+    "InvalidGetTaskByIdParams": {
+      "code": "201",
+      "description": "INVALID_GET_TASK_BY_ID_PARAMS"
+    },
+    "InvalidGetTasksRequestQuery": {
+      "code": "202",
+      "description": "INVALID_GET_TASKS_REQUEST_QUERY"
+    },
+    "InvalidUpdateTaskByIdParams": {
+      "code": "203",
+      "description": "INVALID_UPDATE_TASK_BY_ID_PARAMS"
+    },
+    "InvalidUpdateTaskRequestBody": {
+      "code": "204",
+      "description": "INVALID_UPDATE_TASK_REQUEST_BODY"
+    },
+    "InvalidDeleteTaskByIdParams": {
+      "code": "204",
+      "description": "INVALID_DELETE_TASK_BY_ID_PARAMS"
+    }
+  },
+  "NotFound": {
+    "UserNotFound": {
+      "code": "300",
+      "description": "USER_NOT_FOUND"
+    },
+    "TaskNotFound": {
+      "code": "301",
+      "description": "TASK_NOT_FOUND"
+    }
+  },
+  "Forbidden": {
+    "UnableToDetermineRole": {
+      "code": "401",
+      "description": "UNABLE_TO_DETERMINE_ROLE"
+    },
+    "CannotPerformOperation": {
+      "code": "402",
+      "description": "CANNONT_PERFORM_OPERATION"
+    }
   }
 }

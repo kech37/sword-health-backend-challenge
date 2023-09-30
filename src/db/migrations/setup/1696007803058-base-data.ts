@@ -14,16 +14,20 @@ export class BaseData1696007803058 implements MigrationInterface {
       `INSERT INTO \`public\`.\`user\` (\`id\`, \`name\`, \`role_name\`) VALUES ('fa634d9f-7a47-4efb-b432-812d2b449dd5', 'Manager #1', 'MANAGER')`,
     );
     await queryRunner.query(
+      `INSERT INTO \`public\`.\`user\` (\`id\`, \`name\`, \`role_name\`) VALUES ('31afbafc-bd8f-47c4-bd37-3e6e22f02da2', 'Manager #2', 'MANAGER')`,
+    );
+    await queryRunner.query(
       `INSERT INTO \`public\`.\`user\` (\`id\`, \`name\`, \`role_name\`) VALUES ('41f71b67-a18c-4374-87a4-b2ed044fdbde', 'Technician #1', 'TECHNICIAN')`,
+    );
+    await queryRunner.query(
+      `INSERT INTO \`public\`.\`user\` (\`id\`, \`name\`, \`role_name\`) VALUES ('88686182-9b18-4556-b4bf-664a82bf06e5', 'Technician #2', 'TECHNICIAN')`,
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DELETE FROM \`public\`.\`notification\``);
     await queryRunner.query(`DELETE FROM \`public\`.\`task\``);
-    await queryRunner.query(`DELETE FROM \`public\`.\`user\` WHERE \`id\` = '41f71b67-a18c-4374-87a4-b2ed044fdbde'`);
-    await queryRunner.query(`DELETE FROM \`public\`.\`user\` WHERE \`id\` = 'fa634d9f-7a47-4efb-b432-812d2b449dd5'`);
-    await queryRunner.query(`DELETE FROM \`public\`.\`role\` WHERE \`name\` = 'TECHNICIAN'`);
-    await queryRunner.query(`DELETE FROM \`public\`.\`role\` WHERE \`name\` = 'MANAGER'`);
+    await queryRunner.query(`DELETE FROM \`public\`.\`user\``);
+    await queryRunner.query(`DELETE FROM \`public\`.\`role\``);
   }
 }

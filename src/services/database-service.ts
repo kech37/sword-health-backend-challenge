@@ -18,7 +18,7 @@ export class DatabaseService extends LifeCycleManager {
   retryDealyMs: number;
 
   constructor(service: SwordHealthBackendChallengeService, retry = true, retryDelayMs = 3000) {
-    super(service.logger);
+    super(service.getLogger);
     this.retry = retry;
     this.retryDealyMs = retryDelayMs;
 

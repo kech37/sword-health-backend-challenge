@@ -12,7 +12,7 @@ export class WebServerService extends LifeCycleManager {
   port: number;
 
   constructor(service: SwordHealthBackendChallengeService, port: number) {
-    super(service.logger);
+    super(service.getLogger);
     this.port = port;
   }
 
