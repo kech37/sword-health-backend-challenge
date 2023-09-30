@@ -97,4 +97,10 @@ export class TypeUtils {
     const assertedValue = value as NotificationModel;
     return this.isUUID(assertedValue.id) && assertedValue.type === NotificationType.TASK_COMPLETED && this.isUUID(assertedValue.toUserId);
   }
+
+  static assertsNotificationModel(value: unknown): asserts value is NotificationModel {
+    if (!this.isNotificationModel(value)) {
+      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAValidNotificationModel);
+    }
+  }
 }

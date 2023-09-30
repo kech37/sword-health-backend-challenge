@@ -23,6 +23,9 @@ export class Config {
     PORT: env.get('message_broker_port').required().asPortNumber(),
     USERNAME: env.get('message_broker_username').required().asString(),
     PASSWORD: env.get('message_broker_password').required().asString(),
+    CHANNEL_NAME: env.get('message_broker_channel_name').default('main_channel').asString(),
+    EXCHANGE_NAME: env.get('message_broker_exchange_name').default('notification').asString(),
+    QUEUE_NAME: env.get('message_broker_queue_name').default('center').asString(),
   };
 
   static TOKEN_SCRET = env.get('token_secret').required().asString();

@@ -58,8 +58,10 @@ export class UserFacade extends BaseFacade {
     return result ? UserModel.fromEntity(result) : undefined;
   }
 
-  async getManagers(): Promise<UserModel[]> {
+  async getManagers(requestId: UUID): Promise<UserModel[]> {
     this.initRepositories();
+
+    this.logger.info({ requestId }, 'UserFacade: getManagers');
 
     const result = await this.userRepository.find({
       relations: {
@@ -78,6 +80,7 @@ export class UserFacade extends BaseFacade {
         },
       },
     });
+    this.logger.debug({ requestId, result }, 'getManagers: result');
 
     return result.map((e) => UserModel.fromEntity(e));
   }

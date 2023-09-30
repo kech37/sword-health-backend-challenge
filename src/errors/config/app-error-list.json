@@ -15,6 +15,10 @@
     "NotAValidStringNonNegativeInteger": {
       "code": "I-103",
       "description": "NOT_A_VALID_STRING_NON_NEGATIVE_INTEGER"
+    },
+    "NotAValidNotificationModel": {
+      "code": "I-104",
+      "description": "NOT_A_VALID_NOTIFICATION_MODEL"
     }
   },
   "Singleton": {
@@ -41,6 +45,20 @@
         "code": "I-302",
         "description": "USER_NOT_LOADED"
       }
+    }
+  },
+  "MessageBroker": {
+    "NotConfigured": {
+      "code": "I-500",
+      "description": "MESSAGE_BROKER_NOT_CONFIGURED"
+    },
+    "UnknownRoutingKey": {
+      "code": "I-501",
+      "description": "UNKNOWN_ROUTING_KEY"
+    },
+    "ChannelNotFound": {
+      "code": "I-502",
+      "description": "CHANNEL_NOT_FOUND"
     }
   }
 }

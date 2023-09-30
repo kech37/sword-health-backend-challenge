@@ -1,8 +1,11 @@
-import client, { Connection } from 'amqplib';
+import client, { Connection, ConsumeMessage } from 'amqplib';
 import { Config } from '../../configs/config';
 import { UserFacade } from '../../db/facades/user-facade';
+import { AppMessageBrokerErrors } from '../../errors/generic/app-errors';
 import { SwordHealthBackendChallengeService } from '../../sword-health-backend-challenge-service';
+import { ErrorUtils } from '../../utils/error-utils';
 import { TypeUtils } from '../../utils/type-utils';
+import { UuidUtils } from '../../utils/uuid-utils';
 import { LifeCycleManager } from '../life-cicle-manager';
 import { MessageBrokerChannel } from './message-broker-channel';
 
@@ -20,6 +23,22 @@ export class MessageBrokerService extends LifeCycleManager {
     this.service = service;
 
     this.retryDealyMs = retryDealyMs;
+  }
+
+  private getChannelName(): string {
+    return Config.MESSAGE_BROKER.CHANNEL_NAME;
+  }
+
+  private getExchangeName(): string {
+    return Config.MESSAGE_BROKER.EXCHANGE_NAME;
+  }
+
+  private getQueueName(): string {
+    return `${Config.MESSAGE_BROKER.EXCHANGE_NAME}.${Config.MESSAGE_BROKER.QUEUE_NAME}`;
+  }
+
+  private getRoutingKey(id: UUID): string {
+    return `${Config.MESSAGE_BROKER.EXCHANGE_NAME}.${Config.MESSAGE_BROKER.QUEUE_NAME}.${id}`;
   }
 
   private cleanConnection(connection?: Connection): void {
@@ -46,7 +65,7 @@ export class MessageBrokerService extends LifeCycleManager {
   async connectChannel(msgBrokerChannel: MessageBrokerChannel): Promise<void> {
     this.logger.info({ msgBrokerChannel }, 'MessageBrokerService: connectChannel');
     if (!this.connection) {
-      throw new Error('No Connection Available'); // TODO Create custom error
+      throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.NotConfigured);
     }
 
     const channel = await this.connection.createChannel();
@@ -70,13 +89,27 @@ export class MessageBrokerService extends LifeCycleManager {
 
   async getChannel(tag: string): Promise<MessageBrokerChannel> {
     if (!this.connection) {
-      throw new Error('No Connection Available'); // TODO Create custom error
+      throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.NotConfigured);
     }
 
     this.channels[tag] = new MessageBrokerChannel(tag, this.logger);
     await this.connectChannel(this.channels[tag]);
 
     return this.channels[tag];
+  }
+
+  publish(requestId: UUID, userId: UUID, metadata: object): boolean {
+    this.logger.info({ requestId, userId, metadata }, 'MessageBrokerService: publish');
+
+    const channel = this.channels[this.getChannelName()];
+    if (!channel) {
+      throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.ChannelNotFound);
+    }
+    this.logger.debug({ requestId, channel }, 'publish: channel');
+
+    const isPublished = channel.publishMessage(this.getExchangeName(), this.getRoutingKey(userId), JSON.stringify(metadata));
+    this.logger.debug({ requestId, isPublished }, 'publish: isPublished');
+    return isPublished;
   }
 
   private async init(): Promise<void> {
@@ -99,46 +132,59 @@ export class MessageBrokerService extends LifeCycleManager {
     });
 
     this.connection = connection;
+
+    const channel = await this.getChannel(this.getChannelName());
+    channel.assertExchange(this.getExchangeName());
+    channel.assertQueue(this.getQueueName());
+    channel.addListener(this.getQueueName(), (msg) => {
+      const isAck = this.consumer(msg);
+      if (isAck) {
+        channel.ack(msg);
+      } else {
+        channel.nack(msg);
+      }
+    });
+  }
+
+  private consumer(msg: ConsumeMessage): boolean {
+    const requestId = UuidUtils.getUuid();
+    this.logger.debug({ requestId, msg }, 'MessageBrokerService: consumer');
+    try {
+      const notification = JSON.parse(msg.content.toString());
+      TypeUtils.assertsNotificationModel(notification);
+
+      if (msg.fields.routingKey !== this.getRoutingKey(notification.toUserId)) {
+        throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.UnknownRoutingKey);
+      }
+
+      this.logger.info({ requestId, notification }, `consumer: Manager [${notification.toUserId}] has a new notification [${notification.id}]!`);
+      return true;
+    } catch (error) {
+      this.logger.error({ requestId, error }, 'consumer: error');
+      return false;
+    }
   }
 
   async start(): Promise<void> {
-    this.logger.info('MessageBrokerService: start');
+    const requestId = UuidUtils.getUuid();
+    this.logger.info({ requestId }, 'MessageBrokerService: start');
     try {
       await this.init();
 
-      const channel = await this.getChannel('main-channel');
-      channel.assertExchange('notification');
-      channel.assertQueue('notification.center');
+      const channel = this.channels[this.getChannelName()];
+      if (!channel) {
+        throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.ChannelNotFound);
+      }
 
-      channel.addListener('notification.center', (msg) => {
-        try {
-          const notification = JSON.parse(msg.content.toString());
-          if (!TypeUtils.isNotificationModel(notification)) {
-            throw new Error(); // TODO
-          }
-
-          if (msg.fields.routingKey === `notification.center.${notification.toUserId}`) {
-            this.logger.info({ notification }, `Manager [${notification.toUserId}] has a new notification!`);
-          } else {
-            this.logger.warn({ routingKey: msg.fields.routingKey }, 'Unknow routing key'); // TODO
-            channel.nack(msg);
-          }
-          channel.ack(msg);
-        } catch (error) {
-          this.logger.error({ error }, 'Consumer: error'); // TODO
-          channel.ack(msg);
-        }
-      });
-
-      const managers = await UserFacade.getInstance(this.service).getManagers();
-      this.logger.error({ managers }, 'start: managers');
-      managers.forEach((e) => channel.bindQueue('notification', 'notification.center', `notification.center.${e.id}`));
+      const managers = await UserFacade.getInstance(this.service).getManagers(requestId);
+      this.logger.debug({ requestId, managers }, 'start: managers');
+      managers.forEach((e) => channel.bindQueue(this.getExchangeName(), this.getQueueName(), this.getRoutingKey(e.id)));
     } catch (error) {
-      this.logger.error({ error }, 'start: error');
+      this.logger.error({ requestId, error }, 'start: error');
     }
   }
 
   async stop(): Promise<void> {
-    await this.connection?.close(); // TOD Check this
+    await this.connection?.close(); // TODO Check this
   }
 }

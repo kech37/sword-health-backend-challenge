@@ -55,11 +55,6 @@ export class MessageBrokerChannel {
     });
   }
 
-  sendMessage(queue: string, msg: string): boolean {
-    this.logger.info({ queue, msg }, 'MessageBrokerChannel: sendMessage');
-    return this.channel?.sendToQueue(queue, Buffer.from(msg)) ?? false;
-  }
-
   publishMessage(exchange: string, routingKey: string, msg: string): boolean {
     this.logger.info({ exchange, routingKey, msg }, 'MessageBrokerChannel: publishMessage');
     return this.channel?.publish(exchange, routingKey, Buffer.from(msg)) ?? false;
