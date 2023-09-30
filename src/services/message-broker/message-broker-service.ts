@@ -137,7 +137,10 @@ export class MessageBrokerService extends LifeCycleManager {
     channel.assertExchange(this.getExchangeName());
     channel.assertQueue(this.getQueueName());
     channel.addListener(this.getQueueName(), (msg) => {
-      const isAck = this.consumer(msg);
+      const requestId = UuidUtils.getUuid();
+      this.logger.info({ requestId, msg }, 'MessageBrokerService: consumer');
+      const isAck = this.consumer(requestId, msg);
+      this.logger.debug({ requestId, isAck }, 'consumer: isAck');
       if (isAck) {
         channel.ack(msg);
       } else {
@@ -146,23 +149,21 @@ export class MessageBrokerService extends LifeCycleManager {
     });
   }
 
-  private consumer(msg: ConsumeMessage): boolean {
-    const requestId = UuidUtils.getUuid();
-    this.logger.debug({ requestId, msg }, 'MessageBrokerService: consumer');
+  private consumer(requestId: UUID, msg: ConsumeMessage): boolean {
     try {
       const notification = JSON.parse(msg.content.toString());
-      TypeUtils.assertsNotificationModel(notification);
+      this.logger.debug({ requestId, notification }, 'consumer: notification');
+      TypeUtils.assertsNotification(notification);
 
       if (msg.fields.routingKey !== this.getRoutingKey(notification.toUserId)) {
-        throw ErrorUtils.createApplicationError(AppMessageBrokerErrors.UnknownRoutingKey);
+        return false;
       }
 
       this.logger.info({ requestId, notification }, `consumer: Manager [${notification.toUserId}] has a new notification [${notification.id}]!`);
-      return true;
     } catch (error) {
       this.logger.error({ requestId, error }, 'consumer: error');
-      return false;
     }
+    return true;
   }
 
   async start(): Promise<void> {
@@ -185,6 +186,6 @@ export class MessageBrokerService extends LifeCycleManager {
   }
 
   async stop(): Promise<void> {
-    await this.connection?.close(); // TODO Check this
+    await this.connection?.close();
   }
 }

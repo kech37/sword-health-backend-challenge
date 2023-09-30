@@ -16,9 +16,9 @@
       "code": "I-103",
       "description": "NOT_A_VALID_STRING_NON_NEGATIVE_INTEGER"
     },
-    "NotAValidNotificationModel": {
+    "NotAValidNotification": {
       "code": "I-104",
-      "description": "NOT_A_VALID_NOTIFICATION_MODEL"
+      "description": "NOT_A_VALID_NOTIFICATION"
     }
   },
   "Singleton": {
@@ -52,12 +52,8 @@
       "code": "I-500",
       "description": "MESSAGE_BROKER_NOT_CONFIGURED"
     },
-    "UnknownRoutingKey": {
-      "code": "I-501",
-      "description": "UNKNOWN_ROUTING_KEY"
-    },
     "ChannelNotFound": {
-      "code": "I-502",
+      "code": "I-501",
       "description": "CHANNEL_NOT_FOUND"
     }
   }

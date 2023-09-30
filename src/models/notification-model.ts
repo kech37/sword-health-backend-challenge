@@ -8,21 +8,22 @@ export class NotificationModel {
 
   toUserId: UUID;
 
-  // metadata: Object;
+  metadata: object;
 
   isRead: boolean;
 
   createdAt: Date;
 
-  constructor(id: UUID, type: NotificationType, toUserId: UUID, isRead: boolean, createadAt: Date) {
+  constructor(id: UUID, type: NotificationType, toUserId: UUID, metadata: object, isRead: boolean, createadAt: Date) {
     this.id = id;
     this.type = type;
     this.toUserId = toUserId;
+    this.metadata = metadata;
     this.isRead = isRead;
     this.createdAt = createadAt;
   }
 
   static fromEntity(entity: NotificationEntity): NotificationModel {
-    return new NotificationModel(entity.id, entity.type, entity.toUserId, entity.isRead, entity.createdAt);
+    return new NotificationModel(entity.id, entity.type, entity.toUserId, entity.metadata, entity.isRead, entity.createdAt);
   }
 }

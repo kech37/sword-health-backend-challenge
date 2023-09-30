@@ -49,7 +49,9 @@ export class NotificationFacade extends BaseFacade {
     const insertedResult = await this.notificationRepository.insert({
       type: NotificationType.TASK_COMPLETED,
       toUserId: task.managerId,
-      metadata: task,
+      metadata: {
+        taskId: task.id,
+      },
     });
     this.logger.debug({ requestId, insertedResult }, 'create: insertedResult');
 
