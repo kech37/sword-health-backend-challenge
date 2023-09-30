@@ -41,7 +41,7 @@ export class Schema1696007755012 implements MigrationInterface {
     await queryRunner.query(`
             CREATE TABLE \`task\` (
                 \`id\` varchar(36) NOT NULL,
-                \`summary\` varchar(2500) NOT NULL,
+                \`summary\` text NOT NULL,
                 \`completed_at\` datetime NULL,
                 \`status\` enum ('NEW', 'ON_GOING', 'COMPLETED', 'ARCHIVED') NOT NULL DEFAULT 'NEW',
                 \`technician_id\` varchar(255) NOT NULL,

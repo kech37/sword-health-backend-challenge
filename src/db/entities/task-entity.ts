@@ -12,9 +12,8 @@ export class TaskEntity extends BaseEntity {
   })
   id!: UUID;
 
-  @Column('varchar', {
+  @Column('text', {
     name: 'summary',
-    length: 2500,
     transformer: new EncryptionTransformer(DatabaseEncryptionTransformerConfig),
     nullable: false,
   })
