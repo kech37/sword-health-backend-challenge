@@ -34,9 +34,9 @@
       "code": "401",
       "description": "UNABLE_TO_DETERMINE_ROLE"
     },
-    "NotAllowedToViewTask": {
+    "CannotPerformOperation": {
       "code": "402",
-      "description": "NOT_ALLOWED_TO_VIEW_TASK"
+      "description": "CANNONT_PERFORM_OPERATION"
     }
   }
 }

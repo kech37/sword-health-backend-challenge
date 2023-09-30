@@ -64,9 +64,15 @@ export class TaskService extends BaseController {
       if (!TypeUtils.isUUID(managerId)) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
       }
-      const manager = await UserFacade.getInstance(this.service).getById(requestId, managerId);
+      const manager = await UserFacade.getInstance(this.service).getById(requestId, managerId, { load: { role: true } });
       if (!manager) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+      }
+      if (!manager.role) {
+        throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+      }
+      if (!Utils.isManagerRole(manager.role)) {
+        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
       }
       this.logger.debug({ requestId, user }, 'create: technician');
 
@@ -107,7 +113,7 @@ export class TaskService extends BaseController {
         return task;
       }
 
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.NotAllowedToViewTask);
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
     }
 
     throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);

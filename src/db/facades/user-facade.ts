@@ -40,17 +40,17 @@ export class UserFacade extends BaseFacade {
     this.userRepository = this.dataSource.getRepository(UserEntity);
   }
 
-  async getById(requestId: UUID, userId: UUID, options?: GetByIdOptions): Promise<UserModel | undefined> {
+  async getById(requestId: UUID, id: UUID, options?: GetByIdOptions): Promise<UserModel | undefined> {
     this.initRepositories();
 
-    this.logger.info({ requestId, userId }, 'UserFacade: getById');
+    this.logger.info({ requestId, id }, 'UserFacade: getById');
 
     const result = await this.userRepository.findOne({
       relations: {
         role: options?.load?.role,
       },
       where: {
-        id: userId,
+        id,
       },
     });
     this.logger.debug({ result }, 'get: result');
