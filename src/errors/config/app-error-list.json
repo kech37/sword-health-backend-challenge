@@ -11,6 +11,10 @@
     "NotAString": {
       "code": "I-102",
       "description": "VARIABLE_IS_NOT_A_STRING"
+    },
+    "NotAValidStringNonNegativeInteger": {
+      "code": "I-103",
+      "description": "NOT_A_VALID_STRING_NON_NEGATIVE_INTEGER"
     }
   },
   "Singleton": {

@@ -39,6 +39,7 @@ paths:
           schema:
             type: integer
             default: 10
+            minimum: 0
         - in: query
           name: skip
           description: Number of items to skip
@@ -46,12 +47,13 @@ paths:
           schema:
             type: integer
             default: 0
+            minimum: 0
         - in: query
           name: status
           description: Filter by task status
           required: false
           schema:
-            $ref: '#/components/schemas/TaskStatus'
+            $ref: '#/components/schemas/FilterTaskStatus'
         - in: query
           name: technicianId
           description: Filter by technician ID
@@ -335,6 +337,9 @@ components:
     TaskStatus:
       type: string
       enum: [NEW, ON_GOING, COMPLETED, ARCHIVED]
+    FilterTaskStatus:
+      type: string
+      enum: [NEW, ON_GOING, COMPLETED]
     User:
       type: object
       properties:

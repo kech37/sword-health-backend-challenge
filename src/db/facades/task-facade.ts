@@ -1,4 +1,5 @@
 import { Not, Repository } from 'typeorm';
+import { PaginatedResponse } from '../../@types/paginated-response';
 import { BaseFacade } from '../../base/base-facade';
 import { AppDatabaseErrors, AppSingletonErrors } from '../../errors/generic/app-errors';
 import { TaskModel } from '../../models/task-model';
@@ -38,6 +39,30 @@ export class TaskFacade extends BaseFacade {
     }
 
     this.taskRepository = this.dataSource.getRepository(TaskEntity);
+  }
+
+  async get(requestId: UUID, limit: number, skip: number, status?: TaskStatus, technicianId?: UUID): Promise<PaginatedResponse<TaskModel>> {
+    this.initRepositories();
+    this.logger.info({ requestId, limit, skip }, 'TaskFacade: get');
+
+    const [result, total] = await this.taskRepository.findAndCount({
+      relations: {
+        manager: true,
+        technician: true,
+      },
+      where: {
+        status: status ?? Not(TaskStatus.ARCHIVED),
+        technicianId,
+      },
+      order: {
+        createdAt: 'DESC',
+      },
+      skip,
+      take: limit,
+    });
+    this.logger.debug({ requestId, result, total }, 'create: result, total');
+
+    return { result: result.map((e) => TaskModel.fromEntity(e)), total };
   }
 
   async create(requestId: UUID, summary: string, managerId: UUID, technicianId: UUID): Promise<TaskModel> {

@@ -1,5 +1,7 @@
 import { HttpErrorCode } from '../@types/http-error-code';
+import { PaginatedResponse } from '../@types/paginated-response';
 import { BaseController } from '../base/base-controller';
+import { TaskStatus } from '../db/@types/task-status';
 import { TaskFacade } from '../db/facades/task-facade';
 import { UserFacade } from '../db/facades/user-facade';
 import { ApiBadRequestErrors, ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
@@ -29,6 +31,40 @@ export class TaskService extends BaseController {
     }
     this.instace = new TaskService(service);
     return this.instace;
+  }
+
+  async get(requestId: UUID, userId: UUID, limit: number, skip: number, status?: TaskStatus, technicianId?: UUID): Promise<PaginatedResponse<TaskModel>> {
+    this.logger.info({ requestId, userId, limit, skip, status, technicianId }, 'TaskService: get');
+
+    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
+      load: {
+        role: true,
+      },
+    });
+    if (!user) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    if (!user.role) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+    }
+    this.logger.debug({ requestId, user }, 'get: user');
+
+    let technicianIdToBeUsed: UUID | undefined;
+    if (Utils.isManagerRole(user.role)) {
+      technicianIdToBeUsed = technicianId;
+    } else if (Utils.isTechnicianRole(user.role)) {
+      if (technicianId && technicianId !== user.id) {
+        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+      }
+      technicianIdToBeUsed = user.id;
+    } else {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
+    }
+
+    const result = await TaskFacade.getInstance(this.service).get(requestId, limit, skip, status, technicianIdToBeUsed);
+    this.logger.debug({ requestId, result }, 'get: result');
+
+    return result;
   }
 
   async create(requestId: UUID, userId: UUID, summary: string, managerId?: UUID, technicianId?: UUID): Promise<TaskModel> {

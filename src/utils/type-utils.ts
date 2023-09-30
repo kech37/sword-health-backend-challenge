@@ -1,6 +1,7 @@
 import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
 import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
 import { JwtPayload } from '../@types/jwt-payload';
+import { TaskStatus } from '../db/@types/task-status';
 import { AppTypeCheckErrors } from '../errors/generic/app-errors';
 import { ErrorUtils } from './error-utils';
 import { UuidUtils } from './uuid-utils';
@@ -51,5 +52,19 @@ export class TypeUtils {
   static isGetTaskByIdParams(value: unknown): value is GetTaskByIdParams {
     const assertedValue = value as GetTaskByIdParams;
     return this.isUUID(assertedValue.id);
+  }
+
+  static isStringNonNegativeInteger(value: unknown): value is StringNonNegativeInteger {
+    return this.isString(value) && /^\d*$/.test(value);
+  }
+
+  static assertsStringNonNegativeInteger(value: unknown): asserts value is StringNonNegativeInteger {
+    if (!this.isStringNonNegativeInteger(value)) {
+      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAValidStringNonNegativeInteger);
+    }
+  }
+
+  static isTaskStatus(value: unknown): value is TaskStatus {
+    return this.isString(value) && Object.values<string>(TaskStatus).includes(value);
   }
 }

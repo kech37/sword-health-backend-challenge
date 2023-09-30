@@ -1,5 +1,6 @@
 import { Task } from '../@types/api/task';
 import { User } from '../@types/api/user';
+import { PaginatedResponse } from '../@types/paginated-response';
 import { AppDatabaseErrors } from '../errors/generic/app-errors';
 import { TaskModel } from '../models/task-model';
 import { UserModel } from '../models/user-model';
@@ -26,6 +27,13 @@ export class ResponseBuilder {
       technician: this.toUser(model.technician),
       createdAt: model.createdAt.toISOString(),
       completedAt: model.completedAt?.toISOString(),
+    };
+  }
+
+  static toGetTasksResponse(models: TaskModel[], total: number): PaginatedResponse<Task> {
+    return {
+      result: models.map((e) => this.toTask(e)),
+      total,
     };
   }
 }

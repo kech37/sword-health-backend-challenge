@@ -8,6 +8,10 @@ interface UnitDateString {
   unit?: 'DateString';
 }
 
+interface UnitStringNonNegativeInteger {
+  unit?: 'StringNonNegativeInteger';
+}
+
 declare global {
   /**
    * An UUID
@@ -22,4 +26,10 @@ declare global {
    * @pattern ^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$
    */
   type DateString = string & UnitDateString;
+
+  /**
+   * An String Positive Integer
+   * @pattern ^\d*$
+   */
+  type StringNonNegativeInteger = string & UnitStringNonNegativeInteger;
 }
