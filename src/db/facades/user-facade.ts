@@ -57,4 +57,31 @@ export class UserFacade extends BaseFacade {
 
     return result ? UserModel.fromEntity(result) : undefined;
   }
+
+  async getManagers(requestId: UUID): Promise<UserModel[]> {
+    this.initRepositories();
+
+    this.logger.info({ requestId }, 'UserFacade: getManagers');
+
+    const result = await this.userRepository.find({
+      relations: {
+        role: true,
+      },
+      where: {
+        role: {
+          canOwnCreate: true,
+          canOwnRead: true,
+          canOwnUpdate: true,
+          canOwnDelete: true,
+          canGlobalCreate: false,
+          canGlobalRead: true,
+          canGlobalUpdate: false,
+          canGlobalDelete: true,
+        },
+      },
+    });
+    this.logger.debug({ requestId, result }, 'getManagers: result');
+
+    return result.map((e) => UserModel.fromEntity(e));
+  }
 }

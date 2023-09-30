@@ -1,9 +1,11 @@
 import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
 import { DeleteTaskByIdParams } from '../@types/api/delete-task-by-id-params';
 import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
+import { Notification, NotificationMetadata } from '../@types/api/notification';
 import { UpdateTaskIdParams } from '../@types/api/update-task-id-params';
 import { UpdateTaskRequestBody } from '../@types/api/update-task-request-body';
 import { JwtPayload } from '../@types/jwt-payload';
+import { NotificationType } from '../db/@types/notification-type';
 import { TaskStatus } from '../db/@types/task-status';
 import { AppTypeCheckErrors } from '../errors/generic/app-errors';
 import { ErrorUtils } from './error-utils';
@@ -88,5 +90,36 @@ export class TypeUtils {
   static isDeleteTaskByIdParams(value: unknown): value is DeleteTaskByIdParams {
     const assertedValue = value as DeleteTaskByIdParams;
     return this.isUUID(assertedValue.id);
+  }
+
+  static isNotificationMetadata(value: unknown): value is NotificationMetadata {
+    const assertedValue = value as NotificationMetadata;
+    return this.isUUID(assertedValue.taskId);
+  }
+
+  static isBoolean(value: unknown): value is boolean {
+    return typeof value === 'boolean';
+  }
+
+  static isDateString(value: unknown): value is DateString {
+    return this.isString(value) && /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/.test(value);
+  }
+
+  static isNotification(value: unknown): value is Notification {
+    const assertedValue = value as Notification;
+    return (
+      this.isUUID(assertedValue.id) &&
+      assertedValue.type === NotificationType.TASK_COMPLETED &&
+      this.isUUID(assertedValue.toUserId) &&
+      this.isNotificationMetadata(assertedValue.metadata) &&
+      this.isBoolean(assertedValue.isRead) &&
+      this.isDateString(assertedValue.createdAt)
+    );
+  }
+
+  static assertsNotification(value: unknown): asserts value is Notification {
+    if (!this.isNotification(value)) {
+      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAValidNotification);
+    }
   }
 }

@@ -8,6 +8,7 @@ import { TaskController } from './controllers/task-controller';
 import { DatabaseService } from './services/database-service';
 import { LifeCycleManager } from './services/life-cicle-manager';
 import { LoggerService } from './services/logger-service';
+import { MessageBrokerService } from './services/message-broker/message-broker-service';
 import { WebServerService } from './services/web-server-service';
 
 export class SwordHealthBackendChallengeService {
@@ -15,9 +16,11 @@ export class SwordHealthBackendChallengeService {
 
   private readonly lifeCycleManager: LifeCycleManager;
 
+  private readonly dataSource: DatabaseService;
+
   private readonly webServer: WebServerService;
 
-  private readonly dataSource: DatabaseService;
+  private readonly msgBroker: MessageBrokerService;
 
   private controllers: BaseController[];
 
@@ -31,6 +34,7 @@ export class SwordHealthBackendChallengeService {
 
     this.dataSource = this.lifeCycleManager.addService(new DatabaseService(this));
     this.webServer = this.lifeCycleManager.addService(new WebServerService(this, Config.HTTP_SERVER_PORT));
+    this.msgBroker = this.lifeCycleManager.addService(new MessageBrokerService(this));
 
     this.webServer.use(json());
     this.webServer.use(bearerToken());
@@ -43,20 +47,24 @@ export class SwordHealthBackendChallengeService {
     return this.logger;
   }
 
+  get getDataSource(): DataSource {
+    return this.dataSource.dataSource;
+  }
+
   get getWebServer(): WebServerService {
     return this.webServer;
   }
 
-  get getDataSource(): DataSource {
-    return this.dataSource.dataSource;
+  get getMsgBroker(): MessageBrokerService {
+    return this.msgBroker;
   }
 
   private setupControllers(): void {
     this.controllers.push(TaskController.getInstance(this));
   }
 
-  run(): this {
-    this.lifeCycleManager.start();
+  async run(): Promise<this> {
+    await this.lifeCycleManager.start();
 
     this.setupControllers();
 

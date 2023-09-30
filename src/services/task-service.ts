@@ -188,6 +188,9 @@ export class TaskService extends BaseController {
     if (result.status === TaskStatus.COMPLETED) {
       const notification = await NotificationFacade.getInstance(this.service).create(requestId, task);
       this.logger.debug({ requestId, notification }, 'update: notification');
+
+      const isPublished = this.service.getMsgBroker.publish(requestId, notification.toUserId, notification);
+      this.logger.debug({ requestId, isPublished }, 'update: isPublished');
     }
 
     return result;
