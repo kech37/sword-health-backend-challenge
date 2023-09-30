@@ -42,6 +42,13 @@ export class TaskController extends BaseController {
       (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
       this.errorFactory((req, res) => TaskController.getInstance().getById(req, res)),
     );
+
+    this.webServer.on(
+      WebMethod.PATCH,
+      '/task/:id',
+      (req, res, next) => JwtAuthenticationMiddleware.getInstance().getMiddleware(req, res, next),
+      this.errorFactory((req, res) => TaskController.getInstance().update(req, res)),
+    );
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): TaskController {
@@ -138,6 +145,29 @@ export class TaskController extends BaseController {
 
     const result = await TaskService.getInstance(this.service).getById(requestId, userId, params.id);
     this.logger.debug({ requestId, result }, 'getById: result');
+
+    return response.status(200).send(ResponseBuilder.toTask(result));
+  }
+
+  private async update(request: Request, response: Response): Promise<Response> {
+    const { requestId, jwtPayload } = response.locals;
+    TypeUtils.assertUUID(requestId);
+
+    TypeUtils.assertJwtPayload(jwtPayload);
+    const { owner: userId } = jwtPayload;
+
+    const { params, body } = request;
+    if (!TypeUtils.isUpdateTaskIdParams(params)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidUpdateTaskByIdParams);
+    }
+    if (!TypeUtils.isUpdateTaskRequestBody(body) || (TypeUtils.isUpdateTaskRequestBody(body) && body.status === TaskStatus.ARCHIVED)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidUpdateTaskRequestBody);
+    }
+
+    this.logger.info({ requestId, userId, params, body }, 'TaskController: update');
+
+    const result = await TaskService.getInstance(this.service).update(requestId, userId, params.id, body.status, body.summary);
+    this.logger.debug({ requestId, result }, 'update: result');
 
     return response.status(200).send(ResponseBuilder.toTask(result));
   }

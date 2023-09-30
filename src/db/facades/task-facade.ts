@@ -111,4 +111,33 @@ export class TaskFacade extends BaseFacade {
 
     return result ? TaskModel.fromEntity(result) : undefined;
   }
+
+  async update(requestId: UUID, id: string, status?: TaskStatus, summary?: string): Promise<TaskModel> {
+    this.initRepositories();
+    this.logger.info({ requestId, id }, 'TaskFacade: update');
+
+    const updateResult = await this.taskRepository.update(
+      {
+        id,
+      },
+      {
+        status,
+        summary,
+      },
+    );
+    this.logger.debug({ requestId, updateResult }, 'update: updateResult');
+
+    const result = await this.taskRepository.findOneOrFail({
+      relations: {
+        manager: true,
+        technician: true,
+      },
+      where: {
+        id,
+      },
+    });
+    this.logger.debug({ requestId, result }, 'update: result');
+
+    return TaskModel.fromEntity(result);
+  }
 }

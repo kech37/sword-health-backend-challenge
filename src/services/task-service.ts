@@ -2,6 +2,7 @@ import { HttpErrorCode } from '../@types/http-error-code';
 import { PaginatedResponse } from '../@types/paginated-response';
 import { BaseController } from '../base/base-controller';
 import { TaskStatus } from '../db/@types/task-status';
+import { NotificationFacade } from '../db/facades/notification-facade';
 import { TaskFacade } from '../db/facades/task-facade';
 import { UserFacade } from '../db/facades/user-facade';
 import { ApiBadRequestErrors, ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
@@ -153,5 +154,42 @@ export class TaskService extends BaseController {
     }
 
     throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
+  }
+
+  async update(requestId: UUID, userId: UUID, id: UUID, status?: TaskStatus, summary?: string): Promise<TaskModel> {
+    this.logger.info({ requestId, userId, id, status, summary }, 'TaskService: update');
+
+    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
+      load: {
+        role: true,
+      },
+    });
+    if (!user) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    if (!user.role) {
+      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
+    }
+    this.logger.debug({ requestId, user }, 'update: user');
+
+    const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
+    if (!task) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound);
+    }
+    this.logger.debug({ requestId, task }, 'update: task');
+
+    if (task.status === TaskStatus.COMPLETED || (task.status !== TaskStatus.NEW && summary) || task.technicianId !== user.id) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+    }
+
+    const result = await TaskFacade.getInstance(this.service).update(requestId, task.id, status, summary);
+    this.logger.debug({ requestId, result }, 'update: result');
+
+    if (result.status === TaskStatus.COMPLETED) {
+      const notification = await NotificationFacade.getInstance(this.service).create(requestId, task);
+      this.logger.debug({ requestId, notification }, 'update: notification');
+    }
+
+    return result;
   }
 }

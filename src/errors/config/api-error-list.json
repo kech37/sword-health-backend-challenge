@@ -21,6 +21,14 @@
     "InvalidGetTasksRequestQuery": {
       "code": "202",
       "description": "INVALID_GET_TASKS_REQUEST_QUERY"
+    },
+    "InvalidUpdateTaskByIdParams": {
+      "code": "203",
+      "description": "INVALID_UPDATE_TASK_BY_ID_PARAMS"
+    },
+    "InvalidUpdateTaskRequestBody": {
+      "code": "204",
+      "description": "INVALID_UPDATE_TASK_REQUEST_BODY"
     }
   },
   "NotFound": {
