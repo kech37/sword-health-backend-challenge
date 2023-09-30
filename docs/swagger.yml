@@ -180,6 +180,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Task'
+        304:
+          $ref: '#/components/responses/304'
         400:
           $ref: '#/components/responses/400'
         401:
@@ -302,6 +304,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Notification'
+        304:
+          $ref: '#/components/responses/304'
         400:
           $ref: '#/components/responses/400'
         401:
@@ -450,6 +454,12 @@ components:
   responses:
     200:
       description: Ok
+      content:
+        text/plain:
+          schema:
+            type: string
+    304:
+      description: Not Modified
       content:
         text/plain:
           schema:

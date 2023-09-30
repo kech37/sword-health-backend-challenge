@@ -138,4 +138,8 @@ export class TypeUtils {
     const assertedValue = value as UpdateNotificationRequestBody;
     return assertedValue.isRead === undefined || this.isBoolean(assertedValue.isRead);
   }
+
+  static isEmptyObject(value: unknown): boolean {
+    return !!value && typeof value === 'object' && Object.keys(value).length === 0;
+  }
 }

@@ -173,6 +173,10 @@ export class TaskController extends BaseController {
 
     this.logger.info({ requestId, userId, params, body }, 'TaskController: update');
 
+    if (TypeUtils.isEmptyObject(body)) {
+      return response.sendStatus(HttpErrorCode.HTTP_304_NotModified);
+    }
+
     const result = await TaskService.getInstance(this.service).update(requestId, userId, params.id, body.status, body.summary);
     this.logger.debug({ requestId, result }, 'update: result');
 

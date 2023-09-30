@@ -99,6 +99,10 @@ export class NotificationController extends BaseController {
 
     this.logger.info({ requestId, userId, params, body }, 'NotificationController: update');
 
+    if (TypeUtils.isEmptyObject(body)) {
+      return response.sendStatus(HttpErrorCode.HTTP_304_NotModified);
+    }
+
     const [updatedNotification, task] = await NotificationService.getInstance(this.service).update(requestId, userId, params.id, body.isRead);
 
     this.logger.debug({ requestId, updatedNotification, task }, 'update: updatedNotification, task');
