@@ -8,7 +8,6 @@ import { TaskFacade } from '../db/facades/task-facade';
 import { UserFacade } from '../db/facades/user-facade';
 import { ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
 import { AppSingletonErrors, AppTypeCheckErrors } from '../errors/generic/app-errors';
-import { ApplicationError } from '../errors/models/application-error';
 import { NotificationModel } from '../models/notification-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../utils/error-utils';
@@ -26,12 +25,11 @@ describe('Notificaion service', () => {
 
   context('instance', () => {
     it('should throw SERVICE_NOT_DEFINED error', () => {
-      const error = expect(() => {
+      try {
         NotificationService.getInstance();
-      }).to.throw(ApplicationError);
-
-      error.that.has.property('message', AppSingletonErrors.ServiceNotDefined.description);
-      error.that.has.property('errorCode', AppSingletonErrors.ServiceNotDefined.code);
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApplicationError(AppSingletonErrors.ServiceNotDefined));
+      }
     });
   });
 
