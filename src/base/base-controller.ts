@@ -30,7 +30,7 @@ export abstract class BaseController {
     return this.wrap;
   }
 
-  async auxGetUser(requestId: UUID, userId: UUID): Promise<[UserModel, RoleModel]> {
+  protected async auxGetUser(requestId: UUID, userId: UUID): Promise<[UserModel, RoleModel]> {
     this.logger.info({ requestId, userId }, 'BaseController: auxGetUser');
     const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
       load: {
