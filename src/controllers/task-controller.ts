@@ -16,11 +16,8 @@ import { JwtAuthenticationMiddleware } from './middlewares/jwt-authentication-mi
 export class TaskController extends BaseController {
   private static instace?: TaskController;
 
-  private readonly service: SwordHealthBackendChallengeService;
-
   private constructor(service: SwordHealthBackendChallengeService) {
     super(service);
-    this.service = service;
 
     this.webServer.on(
       WebMethod.GET,

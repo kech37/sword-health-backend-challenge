@@ -3,9 +3,8 @@ import { PaginatedResponse } from '../@types/paginated-response';
 import { BaseController } from '../base/base-controller';
 import { NotificationFacade } from '../db/facades/notification-facade';
 import { TaskFacade } from '../db/facades/task-facade';
-import { UserFacade } from '../db/facades/user-facade';
 import { ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
-import { AppDatabaseErrors, AppSingletonErrors } from '../errors/generic/app-errors';
+import { AppSingletonErrors } from '../errors/generic/app-errors';
 import { NotificationModel } from '../models/notification-model';
 import { TaskModel } from '../models/task-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
@@ -16,11 +15,8 @@ import { Utils } from '../utils/utils';
 export class NotificationService extends BaseController {
   private static instace?: NotificationService;
 
-  private readonly service: SwordHealthBackendChallengeService;
-
   private constructor(service: SwordHealthBackendChallengeService) {
     super(service);
-    this.service = service;
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): NotificationService {
@@ -37,20 +33,10 @@ export class NotificationService extends BaseController {
   async get(requestId: UUID, userId: UUID, limit: number, skip: number): Promise<[PaginatedResponse<NotificationModel>, TaskModel[]]> {
     this.logger.info({ requestId, userId }, 'NotificationService: get');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'get: user');
 
-    if (Utils.isTechnicianRole(user.role)) {
+    if (Utils.isTechnicianRole(userRole)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
     }
 
@@ -69,23 +55,13 @@ export class NotificationService extends BaseController {
   async update(requestId: UUID, userId: UUID, id: UUID, isRead?: boolean): Promise<[NotificationModel, TaskModel]> {
     this.logger.info({ requestId, userId, id, isRead }, 'NotificationService: update');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'update: user');
 
-    if (Utils.isTechnicianRole(user.role)) {
+    if (Utils.isTechnicianRole(userRole)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
     }
-    if (!Utils.isManagerRole(user.role)) {
+    if (!Utils.isManagerRole(userRole)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
     }
 

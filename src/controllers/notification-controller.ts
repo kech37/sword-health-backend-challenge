@@ -15,11 +15,8 @@ import { JwtAuthenticationMiddleware } from './middlewares/jwt-authentication-mi
 export class NotificationController extends BaseController {
   private static instace?: NotificationController;
 
-  private readonly service: SwordHealthBackendChallengeService;
-
   private constructor(service: SwordHealthBackendChallengeService) {
     super(service);
-    this.service = service;
 
     this.webServer.on(
       WebMethod.GET,
