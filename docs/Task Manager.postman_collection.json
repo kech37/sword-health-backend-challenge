@@ -1,0 +1,2289 @@
+{
+	"info": {
+		"_postman_id": "47c0023d-90eb-407f-bc0d-4155c23ec491",
+		"name": "Task Manager",
+		"description": "Task Manager developed in the context of the Sword Health Backend Challenge technical challenge\n\nContact Support:\n Name: Carlos Pinho\n Email: carlos.p37@gmail.com",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16928580"
+	},
+	"item": [
+		{
+			"name": "task",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Get task",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9428a9b7-c2c6-4275-b1c8-808437782577"
+										}
+									]
+								},
+								"description": "Allows to get a single task by ID with the following conditions:\n- Manager type users can see any available task\n- Technician type users can see tasks that they are assign to\n- Task with archived status will not be displayed"
+							},
+							"response": [
+								{
+									"name": "Ok",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"7898e604-619d-ec9c-8eeb-d5b4f7dd104b\",\n  \"status\": \"ON_GOING\",\n  \"summary\": \"<string>\",\n  \"manager\": {\n    \"id\": \"0a3b1604-fb49-651e-1c79-c55de4da8978\",\n    \"name\": \"<string>\"\n  },\n  \"technician\": {\n    \"id\": \"55aa76ac-28c7-33c9-c22a-c99d1c5e7515\",\n    \"name\": \"<string>\"\n  },\n  \"createdAt\": \"7755\",\n  \"completedAt\": \"2994\"\n}"
+								},
+								{
+									"name": "Bad Request",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Unauthorized",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Forbidden",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Not Found",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Internal Server Error",
+									"originalRequest": {
+										"method": "GET",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Update task",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"COMPLETED\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9428a9b7-c2c6-4275-b1c8-808437782577"
+										}
+									]
+								},
+								"description": "Allows for the update of a given ID task with the following conditions:\n- The task can only be updated if the status **is not** completed\n- The summary can only be updated if the status **is** new\n- Users can only update tasks where they are the task technicians"
+							},
+							"response": [
+								{
+									"name": "Ok",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"7898e604-619d-ec9c-8eeb-d5b4f7dd104b\",\n  \"status\": \"ON_GOING\",\n  \"summary\": \"<string>\",\n  \"manager\": {\n    \"id\": \"0a3b1604-fb49-651e-1c79-c55de4da8978\",\n    \"name\": \"<string>\"\n  },\n  \"technician\": {\n    \"id\": \"55aa76ac-28c7-33c9-c22a-c99d1c5e7515\",\n    \"name\": \"<string>\"\n  },\n  \"createdAt\": \"7755\",\n  \"completedAt\": \"2994\"\n}"
+								},
+								{
+									"name": "Not Modified",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Modified",
+									"code": 304,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": "<string>"
+								},
+								{
+									"name": "Bad Request",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Unauthorized",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Forbidden",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Not Found",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Internal Server Error",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"summary\": \"<string>\",\n  \"status\": \"ON_GOING\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								}
+							]
+						},
+						{
+							"name": "Delete task",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "9428a9b7-c2c6-4275-b1c8-808437782577"
+										}
+									]
+								},
+								"description": "Allows for the deletion of a task by a given ID with the following conditions:\n- Only manager type users can delete tasks\n- Manager can only delete the task that they manage\n- Tasks with completed status will not be deleted but will have their status changed to *archived*"
+							},
+							"response": [
+								{
+									"name": "Ok",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": "<string>"
+								},
+								{
+									"name": "Unauthorized",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Forbidden",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Not Found",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Found",
+									"code": 404,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Internal Server Error",
+									"originalRequest": {
+										"method": "DELETE",
+										"header": [
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"url": {
+											"raw": "{{baseUrl}}/task/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"task",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Fetch all tasks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/task?limit=10&skip=0&status=ON_GOING&technicianId=0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of items to be retrieved per page"
+								},
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of items to skip"
+								},
+								{
+									"key": "status",
+									"value": "ON_GOING",
+									"description": "Filter by task status"
+								},
+								{
+									"key": "technicianId",
+									"value": "0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+									"description": "Filter by technician ID"
+								}
+							]
+						},
+						"description": "Allows for the fetch of all tasks available in the system with pagination and filtering with the following conditions:\n- If the user is a manager he can see all the available tasks\n- If the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)\n- Task with archived status will not be displayed"
+					},
+					"response": [
+						{
+							"name": "Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task?limit=10&skip=0&status=ON_GOING&technicianId=0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										},
+										{
+											"key": "status",
+											"value": "ON_GOING",
+											"description": "Filter by task status"
+										},
+										{
+											"key": "technicianId",
+											"value": "0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+											"description": "Filter by technician ID"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"result\": [\n    {\n      \"id\": \"ed3c468f-c8e9-9049-5b60-65f014e51ba5\",\n      \"status\": \"NEW\",\n      \"summary\": \"<string>\",\n      \"manager\": {\n        \"id\": \"4851ddd3-5096-9912-4f58-c070fa7d5371\",\n        \"name\": \"<string>\"\n      },\n      \"technician\": {\n        \"id\": \"c9e92027-3213-67c1-a05b-f2cdfdc5913e\",\n        \"name\": \"<string>\"\n      },\n      \"createdAt\": \"5371-99\",\n      \"completedAt\": \"9805\"\n    },\n    {\n      \"id\": \"c092a449-8d33-3449-d757-46b36761bb5f\",\n      \"status\": \"ARCHIVED\",\n      \"summary\": \"<string>\",\n      \"manager\": {\n        \"id\": \"205b381f-1601-2c7d-fe93-4cb9a62b8540\",\n        \"name\": \"<string>\"\n      },\n      \"technician\": {\n        \"id\": \"7c092d04-37c6-4644-90ea-e09d630991fc\",\n        \"name\": \"<string>\"\n      },\n      \"createdAt\": \"5945-31\",\n      \"completedAt\": \"1865\"\n    }\n  ],\n  \"total\": 0\n}"
+						},
+						{
+							"name": "Bad Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task?limit=10&skip=0&status=ON_GOING&technicianId=0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										},
+										{
+											"key": "status",
+											"value": "ON_GOING",
+											"description": "Filter by task status"
+										},
+										{
+											"key": "technicianId",
+											"value": "0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+											"description": "Filter by technician ID"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task?limit=10&skip=0&status=ON_GOING&technicianId=0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										},
+										{
+											"key": "status",
+											"value": "ON_GOING",
+											"description": "Filter by task status"
+										},
+										{
+											"key": "technicianId",
+											"value": "0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+											"description": "Filter by technician ID"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Internal Server Error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/task?limit=10&skip=0&status=ON_GOING&technicianId=0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										},
+										{
+											"key": "status",
+											"value": "ON_GOING",
+											"description": "Filter by task status"
+										},
+										{
+											"key": "technicianId",
+											"value": "0f5b301a-847f-4c11-de5a-8544ae9f9eac",
+											"description": "Filter by technician ID"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create task",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"summary\": \"Manager #1 as Manager and Technician #1 as Technician\",\n    \"technicianId\": \"88686182-9b18-4556-b4bf-664a82bf06e5\"\n}",
+							"options": {
+								"raw": {
+									"headerFamily": "json",
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/task",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"task"
+							]
+						},
+						"description": "Allows for the creation of a new task with the following conditions:\n- If the task is created by a manager the _technicianId_ property is mandatory and the user ID will be used in the _managerId_ property (The _managerId_ property in the request body is ignored)\n- If the task is created by a technician the _managerId_ property is mandatory and the user ID will be used in the _technicianId_ property (The _technicianId_ property in the request body is ignored)"
+					},
+					"response": [
+						{
+							"name": "Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"summary\": \"<string>\",\n  \"managerId\": \"3fe6b4ee-874f-3318-1a14-1bfbef031ddb\",\n  \"technicianId\": \"38ad86e3-af53-545c-c5aa-29b64fb1f177\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"id\": \"7898e604-619d-ec9c-8eeb-d5b4f7dd104b\",\n  \"status\": \"ON_GOING\",\n  \"summary\": \"<string>\",\n  \"manager\": {\n    \"id\": \"0a3b1604-fb49-651e-1c79-c55de4da8978\",\n    \"name\": \"<string>\"\n  },\n  \"technician\": {\n    \"id\": \"55aa76ac-28c7-33c9-c22a-c99d1c5e7515\",\n    \"name\": \"<string>\"\n  },\n  \"createdAt\": \"7755\",\n  \"completedAt\": \"2994\"\n}"
+						},
+						{
+							"name": "Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"summary\": \"<string>\",\n  \"managerId\": \"3fe6b4ee-874f-3318-1a14-1bfbef031ddb\",\n  \"technicianId\": \"38ad86e3-af53-545c-c5aa-29b64fb1f177\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"summary\": \"<string>\",\n  \"managerId\": \"3fe6b4ee-874f-3318-1a14-1bfbef031ddb\",\n  \"technicianId\": \"38ad86e3-af53-545c-c5aa-29b64fb1f177\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"summary\": \"<string>\",\n  \"managerId\": \"3fe6b4ee-874f-3318-1a14-1bfbef031ddb\",\n  \"technicianId\": \"38ad86e3-af53-545c-c5aa-29b64fb1f177\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Internal Server Error",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"summary\": \"<string>\",\n  \"managerId\": \"3fe6b4ee-874f-3318-1a14-1bfbef031ddb\",\n  \"technicianId\": \"38ad86e3-af53-545c-c5aa-29b64fb1f177\"\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/task",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"task"
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "notification",
+			"item": [
+				{
+					"name": "{id}",
+					"item": [
+						{
+							"name": "Update notification",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Accept",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"isRead\": true\n}",
+									"options": {
+										"raw": {
+											"headerFamily": "json",
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{baseUrl}}/notification/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "8b3d54dd-6aa4-45d3-ad53-4fe3f2fa4c7c"
+										}
+									]
+								},
+								"description": "Allows for the update of notifications by a given ID with the following conditions:\n- Only manager type users can update notifications\n- Manager type users can only update notifications addressed to themselves"
+							},
+							"response": [
+								{
+									"name": "Ok",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"id\": \"2dae2c7f-07dc-accb-52bf-99c4b4f520be\",\n  \"type\": \"TASK_COMPLETED\",\n  \"task\": {\n    \"id\": \"92c9390f-d812-4cb0-e389-627d1e1012ab\",\n    \"status\": \"ARCHIVED\",\n    \"summary\": \"<string>\",\n    \"createdAt\": \"9867-98\"\n  },\n  \"technician\": {\n    \"id\": \"235d7e8e-6cf5-1988-431f-3ca73a544261\",\n    \"name\": \"<string>\"\n  },\n  \"createdAt\": \"1928\",\n  \"completedAt\": \"9791\"\n}"
+								},
+								{
+									"name": "Not Modified",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Not Modified",
+									"code": 304,
+									"_postman_previewlanguage": "text",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "text/plain"
+										}
+									],
+									"cookie": [],
+									"body": "<string>"
+								},
+								{
+									"name": "Bad Request",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Bad Request",
+									"code": 400,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Unauthorized",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Unauthorized",
+									"code": 401,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Forbidden",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "application/json"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Forbidden",
+									"code": 403,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								},
+								{
+									"name": "Internal Server Error",
+									"originalRequest": {
+										"method": "PATCH",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											},
+											{
+												"key": "Accept",
+												"value": "text/plain"
+											},
+											{
+												"description": "Added as a part of security scheme: bearer",
+												"key": "Authorization",
+												"value": "Bearer <token>"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n  \"isRead\": \"<boolean>\"\n}",
+											"options": {
+												"raw": {
+													"headerFamily": "json",
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{baseUrl}}/notification/:id",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"notification",
+												":id"
+											],
+											"variable": [
+												{
+													"key": "id"
+												}
+											]
+										}
+									},
+									"status": "Internal Server Error",
+									"code": 500,
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										}
+									],
+									"cookie": [],
+									"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Fetch all new notifications",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"notification"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "10",
+									"description": "Number of items to be retrieved per page"
+								},
+								{
+									"key": "skip",
+									"value": "0",
+									"description": "Number of items to skip"
+								}
+							]
+						},
+						"description": "Allows for the fetch of all new notifications available in the system with pagination with the following conditions:\n- Only manager type users can receive notifications\n- Manager type users can only read notifications addressed to themselves\n- Only notifications that are unread can be retrieved"
+					},
+					"response": [
+						{
+							"name": "Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"result\": [\n    {\n      \"id\": \"2976e180-d712-1cc2-2a0d-f25332962403\",\n      \"type\": \"TASK_COMPLETED\",\n      \"task\": {\n        \"id\": \"b7afa1c3-a281-ccd2-00f5-49f65160adfd\",\n        \"status\": \"ON_GOING\",\n        \"summary\": \"<string>\",\n        \"createdAt\": \"4584-64\"\n      },\n      \"technician\": {\n        \"id\": \"fe4efd04-646e-d4c3-64e3-7a863a492986\",\n        \"name\": \"<string>\"\n      },\n      \"createdAt\": \"9457-51-75T99:09:11.47285209577+56:04\",\n      \"completedAt\": \"3378-64-51T93:11.399Z\"\n    },\n    {\n      \"id\": \"87431da1-60e4-5293-17cd-47d54fc73377\",\n      \"type\": \"TASK_COMPLETED\",\n      \"task\": {\n        \"id\": \"ef865c07-708e-1c9e-b56d-ab95314a6f12\",\n        \"status\": \"ARCHIVED\",\n        \"summary\": \"<string>\",\n        \"createdAt\": \"6077\"\n      },\n      \"technician\": {\n        \"id\": \"5ae2f150-4772-1f5a-6d67-f32aa0c83eb2\",\n        \"name\": \"<string>\"\n      },\n      \"createdAt\": \"6570\",\n      \"completedAt\": \"8504-82-36T54:05+66:35\"\n    }\n  ],\n  \"total\": 0\n}"
+						},
+						{
+							"name": "Bad Request",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										}
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Unauthorized",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										}
+									]
+								}
+							},
+							"status": "Unauthorized",
+							"code": 401,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Forbidden",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										}
+									]
+								}
+							},
+							"status": "Forbidden",
+							"code": 403,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						},
+						{
+							"name": "Internal Server Error",
+							"originalRequest": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "text/plain"
+									},
+									{
+										"description": "Added as a part of security scheme: bearer",
+										"key": "Authorization",
+										"value": "Bearer <token>"
+									}
+								],
+								"url": {
+									"raw": "{{baseUrl}}/notification?limit=10&skip=0",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"notification"
+									],
+									"query": [
+										{
+											"key": "limit",
+											"value": "10",
+											"description": "Number of items to be retrieved per page"
+										},
+										{
+											"key": "skip",
+											"value": "0",
+											"description": "Number of items to skip"
+										}
+									]
+								}
+							},
+							"status": "Internal Server Error",
+							"code": 500,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n  \"requestId\": \"09a71344-6c22-05b8-19a3-e27619fa45e9\",\n  \"httpErrorCode\": \"<integer>\",\n  \"httpErrorMessage\": \"<string>\",\n  \"applicationErrorCode\": \"<string>\",\n  \"applicationErrorMessage\": \"<string>\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJvd25lciI6ImZhNjM0ZDlmLTdhNDctNGVmYi1iNDMyLTgxMmQyYjQ0OWRkNSIsImlhdCI6MTY5NTkxODIzMn0.tMLUTqLfqryHjGfV-0mBl2Lh6htUPZujCU7IIhcj3uI",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000"
+		}
+	]
+}
