@@ -16,11 +16,8 @@ import { Utils } from '../utils/utils';
 export class TaskService extends BaseController {
   private static instace?: TaskService;
 
-  private readonly service: SwordHealthBackendChallengeService;
-
   private constructor(service: SwordHealthBackendChallengeService) {
     super(service);
-    this.service = service;
   }
 
   static getInstance(service?: SwordHealthBackendChallengeService): TaskService {
@@ -37,23 +34,13 @@ export class TaskService extends BaseController {
   async get(requestId: UUID, userId: UUID, limit: number, skip: number, status?: TaskStatus, technicianId?: UUID): Promise<PaginatedResponse<TaskModel>> {
     this.logger.info({ requestId, userId, limit, skip, status, technicianId }, 'TaskService: get');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'get: user');
 
     let technicianIdToBeUsed: UUID | undefined;
-    if (Utils.isManagerRole(user.role)) {
+    if (Utils.isManagerRole(userRole)) {
       technicianIdToBeUsed = technicianId;
-    } else if (Utils.isTechnicianRole(user.role)) {
+    } else if (Utils.isTechnicianRole(userRole)) {
       if (technicianId && technicianId !== user.id) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
       }
@@ -71,20 +58,10 @@ export class TaskService extends BaseController {
   async create(requestId: UUID, userId: UUID, summary: string, managerId?: UUID, technicianId?: UUID): Promise<TaskModel> {
     this.logger.info({ requestId, userId, summary, managerId, technicianId }, 'TaskService: create');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'create: user');
 
-    if (Utils.isManagerRole(user.role)) {
+    if (Utils.isManagerRole(userRole)) {
       if (!TypeUtils.isUUID(technicianId)) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
       }
@@ -97,7 +74,7 @@ export class TaskService extends BaseController {
       return TaskFacade.getInstance(this.service).create(requestId, summary, user.id, technician.id);
     }
 
-    if (Utils.isTechnicianRole(user.role)) {
+    if (Utils.isTechnicianRole(userRole)) {
       if (!TypeUtils.isUUID(managerId)) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
       }
@@ -122,17 +99,7 @@ export class TaskService extends BaseController {
   async getById(requestId: UUID, userId: UUID, id: UUID): Promise<TaskModel> {
     this.logger.info({ requestId, userId, id }, 'TaskService: getById');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'getById: user');
 
     const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
@@ -141,11 +108,11 @@ export class TaskService extends BaseController {
     }
     this.logger.debug({ requestId, task }, 'getById: task');
 
-    if (Utils.isManagerRole(user.role)) {
+    if (Utils.isManagerRole(userRole)) {
       return task;
     }
 
-    if (Utils.isTechnicianRole(user.role)) {
+    if (Utils.isTechnicianRole(userRole)) {
       if (task.technicianId === user.id) {
         return task;
       }
@@ -159,17 +126,7 @@ export class TaskService extends BaseController {
   async update(requestId: UUID, userId: UUID, id: UUID, status?: TaskStatus, summary?: string): Promise<TaskModel> {
     this.logger.info({ requestId, userId, id, status, summary }, 'TaskService: update');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'update: user');
 
     const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
@@ -199,17 +156,7 @@ export class TaskService extends BaseController {
   async delete(requestId: UUID, userId: UUID, id: UUID): Promise<void> {
     this.logger.info({ requestId, userId, id }, 'TaskService: delete');
 
-    const user = await UserFacade.getInstance(this.service).getById(requestId, userId, {
-      load: {
-        role: true,
-      },
-    });
-    if (!user) {
-      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-    }
-    if (!user.role) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-    }
+    const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'update: user');
 
     const task = await TaskFacade.getInstance(this.service).getById(requestId, id);
@@ -218,7 +165,7 @@ export class TaskService extends BaseController {
     }
     this.logger.debug({ requestId, task }, 'update: task');
 
-    if (!Utils.isManagerRole(user.role) || (Utils.isManagerRole(user.role) && task.managerId !== user.id)) {
+    if (!Utils.isManagerRole(userRole) || (Utils.isManagerRole(userRole) && task.managerId !== user.id)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
     }
 
