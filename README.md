@@ -1,14 +1,19 @@
 # Sword Health Backend Challenge
 
-## How to run
+## How to build
  <pre>
 git clone https://github.com/kech37/sword-health-backend-challenge.git
 cd sword-health-backend-challenge
 docker-compose -f ./dockers/mysql-docker-compose.yml up -d
 docker-compose -f ./dockers/rabbitmq-docker-compose.yml up -d
 npm run setup:dev
-npm run start
 </pre>
+
+## How to run
+<pre>npm run start</pre>
+or
+<pre>npm run dev</pre>
+for pretty logs
 
 ## Access tokens
 **Manager #1**
