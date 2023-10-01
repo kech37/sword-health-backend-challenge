@@ -1,6 +1,7 @@
 import { json } from 'express';
 import bearerToken from 'express-bearer-token';
 import { DataSource } from 'typeorm';
+import { LogLevel } from './@types/log-level';
 import { BaseController } from './base/base-controller';
 import { Config } from './configs/config';
 import { RequestIdMiddleware } from './controllers/middlewares/request-id-middleware';
@@ -25,10 +26,10 @@ export class SwordHealthBackendChallengeService {
 
   private controllers: BaseController[];
 
-  constructor() {
+  constructor(logLevel?: LogLevel) {
     this.logger = new LoggerService(this.constructor.name);
 
-    this.logger.setLogLevel(Config.LOG_LEVEL);
+    this.logger.setLogLevel(logLevel ?? Config.LOG_LEVEL);
 
     this.lifeCycleManager = new LifeCycleManager(this.logger);
     this.lifeCycleManager.catchSignals();

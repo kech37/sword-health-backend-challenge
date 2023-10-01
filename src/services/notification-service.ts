@@ -1,10 +1,10 @@
 import { HttpErrorCode } from '../@types/http-error-code';
 import { PaginatedResponse } from '../@types/paginated-response';
-import { BaseController } from '../base/base-controller';
+import { BaseService } from '../base/base-service';
 import { NotificationFacade } from '../db/facades/notification-facade';
 import { TaskFacade } from '../db/facades/task-facade';
 import { ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
-import { AppSingletonErrors } from '../errors/generic/app-errors';
+import { AppSingletonErrors, AppTypeCheckErrors } from '../errors/generic/app-errors';
 import { NotificationModel } from '../models/notification-model';
 import { TaskModel } from '../models/task-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
@@ -12,7 +12,7 @@ import { ErrorUtils } from '../utils/error-utils';
 import { TypeUtils } from '../utils/type-utils';
 import { Utils } from '../utils/utils';
 
-export class NotificationService extends BaseController {
+export class NotificationService extends BaseService {
   private static instace?: NotificationService;
 
   private constructor(service: SwordHealthBackendChallengeService) {
@@ -36,7 +36,7 @@ export class NotificationService extends BaseController {
     const [user, userRole] = await this.auxGetUser(requestId, userId);
     this.logger.debug({ requestId, user }, 'get: user');
 
-    if (Utils.isTechnicianRole(userRole)) {
+    if (!Utils.isManagerRole(userRole)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
     }
 
@@ -79,7 +79,7 @@ export class NotificationService extends BaseController {
     this.logger.debug({ requestId, updatedNotification }, 'update: updatedNotification');
 
     if (!updatedNotification.metadata) {
-      throw new Error(); //
+      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotDefined);
     }
     const task = await TaskFacade.getInstance(this.service).getById(requestId, updatedNotification.metadata.taskId, true);
     if (!task) {

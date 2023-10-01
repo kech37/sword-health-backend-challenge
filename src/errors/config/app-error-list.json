@@ -19,6 +19,10 @@
     "NotAValidNotification": {
       "code": "I-104",
       "description": "NOT_A_VALID_NOTIFICATION"
+    },
+    "NotDefined": {
+      "code": "I-105",
+      "description": "NOT_DEFINED"
     }
   },
   "Singleton": {

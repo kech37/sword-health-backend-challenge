@@ -72,7 +72,7 @@ export class ErrorUtils {
   }
 
   static createApplicationError(specificErrorDescription: SpecificErrorDescription, error?: unknown): ApplicationError {
-    return new ApplicationError(specificErrorDescription.code.toString(), specificErrorDescription.description, {
+    return new ApplicationError(specificErrorDescription.code, specificErrorDescription.description, {
       cause: error,
     });
   }
