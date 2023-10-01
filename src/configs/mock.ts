@@ -61,6 +61,8 @@ export class Mock {
 
   static MANAGER_USER_1 = new UserModel('f544491c-17cf-406e-a6c6-3a81a7aa9bd9', 'MANAGER #1', Mock.MANAGER_ROLE);
 
+  static MANAGER_USER_2 = new UserModel('99e241a2-fe84-445e-afc2-22db50cd35de', 'MANAGER #2', Mock.MANAGER_ROLE);
+
   static TECHNICIAN_1 = new UserModel('470bdc41-ad68-45fa-9fb0-78f16e07792f', 'TECHNICIAN #1', Mock.TECHNICIAN_ROLE);
 
   static TECHNICIAN_2 = new UserModel('487728ba-8a8a-4383-89d9-7e1593dc69ad', 'TECHNICIAN #2', Mock.TECHNICIAN_ROLE);

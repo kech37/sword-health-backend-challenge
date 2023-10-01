@@ -265,4 +265,55 @@ describe('Task service', () => {
       expect(result).to.be.deep.equal(updatedTask);
     });
   });
+
+  context('delete', () => {
+    it('should throw TASK_NOT_FOUND error', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(undefined);
+
+        await TaskService.getInstance(service).delete(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, 'INVALID TASK ID');
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound));
+      }
+    });
+
+    it('should throw CANNONT_PERFORM_OPERATION error when user is not a manager', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.TECHNICIAN_1);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+
+        await TaskService.getInstance(service).delete(Mock.REQUEST_ID, Mock.TECHNICIAN_1.id, Mock.TASK_1.id);
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation));
+      }
+    });
+
+    it('should throw CANNONT_PERFORM_OPERATION error when user is the not the task manager', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_2);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+
+        await TaskService.getInstance(service).delete(Mock.REQUEST_ID, Mock.MANAGER_USER_2.id, Mock.TASK_1.id);
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation));
+      }
+    });
+
+    it('should resolve when status task is not completed', async () => {
+      sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
+      sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+      sandbox.stub(TaskFacade.getInstance(service), 'delete').resolves();
+
+      await TaskService.getInstance(service).delete(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, Mock.TASK_1.id);
+    });
+
+    it('should resolve when status task is completed', async () => {
+      sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
+      sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves({ ...Mock.TASK_1, status: TaskStatus.COMPLETED });
+      sandbox.stub(TaskFacade.getInstance(service), 'update').resolves();
+
+      await TaskService.getInstance(service).delete(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, Mock.TASK_1.id);
+    });
+  });
 });
