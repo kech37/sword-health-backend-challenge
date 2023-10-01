@@ -6,7 +6,7 @@ import { NotificationFacade } from '../db/facades/notification-facade';
 import { TaskFacade } from '../db/facades/task-facade';
 import { UserFacade } from '../db/facades/user-facade';
 import { ApiBadRequestErrors, ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
-import { AppDatabaseErrors, AppSingletonErrors } from '../errors/generic/app-errors';
+import { AppSingletonErrors } from '../errors/generic/app-errors';
 import { TaskModel } from '../models/task-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../utils/error-utils';
@@ -78,17 +78,12 @@ export class TaskService extends BaseController {
       if (!TypeUtils.isUUID(managerId)) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
       }
-      const manager = await UserFacade.getInstance(this.service).getById(requestId, managerId, { load: { role: true } });
-      if (!manager) {
-        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-      }
-      if (!manager.role) {
-        throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.RoleNotLoaded);
-      }
-      if (!Utils.isManagerRole(manager.role)) {
+
+      const [manager, managerRole] = await this.auxGetUser(requestId, userId);
+      if (!Utils.isManagerRole(managerRole)) {
         throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
       }
-      this.logger.debug({ requestId, user }, 'create: technician');
+      this.logger.debug({ requestId, user }, 'create: [manager, managerRole');
 
       return TaskFacade.getInstance(this.service).create(requestId, summary, manager.id, user.id);
     }
