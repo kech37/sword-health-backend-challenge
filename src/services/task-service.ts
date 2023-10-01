@@ -1,6 +1,6 @@
 import { HttpErrorCode } from '../@types/http-error-code';
 import { PaginatedResponse } from '../@types/paginated-response';
-import { BaseController } from '../base/base-controller';
+import { BaseService } from '../base/base-service';
 import { TaskStatus } from '../db/@types/task-status';
 import { NotificationFacade } from '../db/facades/notification-facade';
 import { TaskFacade } from '../db/facades/task-facade';
@@ -13,7 +13,7 @@ import { ErrorUtils } from '../utils/error-utils';
 import { TypeUtils } from '../utils/type-utils';
 import { Utils } from '../utils/utils';
 
-export class TaskService extends BaseController {
+export class TaskService extends BaseService {
   private static instace?: TaskService;
 
   private constructor(service: SwordHealthBackendChallengeService) {

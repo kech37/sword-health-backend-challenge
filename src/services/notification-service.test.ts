@@ -56,7 +56,7 @@ describe('Notificaion service', () => {
     });
   });
 
-  context.only('update', () => {
+  context('update', () => {
     it('should throw CANNONT_PERFORM_OPERATION error', async () => {
       try {
         sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.TECHNICIAN_1);
