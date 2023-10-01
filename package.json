@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "build:clean": "del-cli dist && npm run build",
+    "postinstall": "husky install",
     "dev": "npm run build:clean && cd dist/ && clear && dotenv -e ../.env node index.js | npx pino-pretty",
     "test": "npx dotenv -e .env -- mocha -r ts-node/register **/*.test.ts --ignore node_modules/**/*",
     "db-migration:generate": "npx dotenv -e .env -- npx typeorm-ts-node-commonjs migration:generate ./src/db/migrations/%npm_config_name% -d ./src/configs/migrations-database-config.ts -p",
@@ -36,6 +37,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-no-template-curly-in-string-fix": "^1.0.4",
     "eslint-plugin-prettier": "^5.0.0",
+    "husky": "^8.0.3",
     "mocha": "^10.2.0",
     "prettier": "^3.0.3",
     "sinon": "^16.0.0",
