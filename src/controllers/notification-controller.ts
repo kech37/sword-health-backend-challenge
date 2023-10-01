@@ -15,11 +15,8 @@ import { JwtAuthenticationMiddleware } from './middlewares/jwt-authentication-mi
 export class NotificationController extends BaseController {
   private static instace?: NotificationController;
 
-  private readonly service: SwordHealthBackendChallengeService;
-
   private constructor(service: SwordHealthBackendChallengeService) {
     super(service);
-    this.service = service;
 
     this.webServer.on(
       WebMethod.GET,
@@ -54,28 +51,19 @@ export class NotificationController extends BaseController {
     TypeUtils.assertJwtPayload(jwtPayload);
     const { owner: userId } = jwtPayload;
 
-    const parsedQuery: PaginatedRequestQuery = {};
-    try {
-      const { limit, skip } = request.query;
-      if (limit) {
-        TypeUtils.assertsStringNonNegativeInteger(limit);
-        parsedQuery.limit = limit;
-      }
-      if (skip) {
-        TypeUtils.assertsStringNonNegativeInteger(skip);
-        parsedQuery.skip = skip;
-      }
-    } catch (_e) {
+    const { query } = request;
+    if (!TypeUtils.isPaginatedRequestQuery(query)) {
       throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidGetTasksRequestQuery);
     }
+    const assertedQuery = query as PaginatedRequestQuery;
 
-    this.logger.info({ requestId, userId }, 'NotificationController: get');
+    this.logger.info({ requestId, userId, query }, 'NotificationController: get');
 
     const [{ result, total }, tasks] = await NotificationService.getInstance(this.service).get(
       requestId,
       userId,
-      parsedQuery.limit ? Number.parseInt(parsedQuery.limit, 10) : 10,
-      parsedQuery.skip ? Number.parseInt(parsedQuery.skip, 10) : 0,
+      assertedQuery.limit ? Number.parseInt(assertedQuery.limit, 10) : 10,
+      assertedQuery.skip ? Number.parseInt(assertedQuery.skip, 10) : 0,
     );
     this.logger.debug({ requestId, result, total }, 'get: result, total, tasks');
 
@@ -98,6 +86,10 @@ export class NotificationController extends BaseController {
     }
 
     this.logger.info({ requestId, userId, params, body }, 'NotificationController: update');
+
+    if (TypeUtils.isEmptyObject(body)) {
+      return response.sendStatus(HttpErrorCode.HTTP_304_NotModified);
+    }
 
     const [updatedNotification, task] = await NotificationService.getInstance(this.service).update(requestId, userId, params.id, body.isRead);
 

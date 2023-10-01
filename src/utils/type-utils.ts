@@ -1,7 +1,9 @@
 import { CreateTaskRequestBody } from '../@types/api/create-task-request-body';
 import { DeleteTaskByIdParams } from '../@types/api/delete-task-by-id-params';
 import { GetTaskByIdParams } from '../@types/api/get-task-by-id-params';
+import { GetTasksRequestQuery } from '../@types/api/get-tasks-request-query';
 import { Notification, NotificationMetadata } from '../@types/api/notification';
+import { PaginatedRequestQuery } from '../@types/api/paginated-request-query';
 import { UpdateNotificationRequestBody } from '../@types/api/update-notificaiton-request-body';
 import { UpdateNotificationByIdParams } from '../@types/api/update-notification-by-id-params';
 import { UpdateTaskIdParams } from '../@types/api/update-task-id-params';
@@ -63,12 +65,6 @@ export class TypeUtils {
 
   static isStringNonNegativeInteger(value: unknown): value is StringNonNegativeInteger {
     return this.isString(value) && /^\d*$/.test(value);
-  }
-
-  static assertsStringNonNegativeInteger(value: unknown): asserts value is StringNonNegativeInteger {
-    if (!this.isStringNonNegativeInteger(value)) {
-      throw ErrorUtils.createApplicationError(AppTypeCheckErrors.NotAValidStringNonNegativeInteger);
-    }
   }
 
   static isTaskStatus(value: unknown): value is TaskStatus {
@@ -137,5 +133,26 @@ export class TypeUtils {
   static isUpdateNotificationRequestBody(value: unknown): value is UpdateNotificationRequestBody {
     const assertedValue = value as UpdateNotificationRequestBody;
     return assertedValue.isRead === undefined || this.isBoolean(assertedValue.isRead);
+  }
+
+  static isEmptyObject(value: unknown): boolean {
+    return !!value && typeof value === 'object' && Object.keys(value).length === 0;
+  }
+
+  static isPaginatedRequestQuery(value: unknown): value is PaginatedRequestQuery {
+    const assertedValue = value as PaginatedRequestQuery;
+    return (
+      (assertedValue.limit === undefined || this.isStringNonNegativeInteger(assertedValue.limit)) &&
+      (assertedValue.skip === undefined || this.isStringNonNegativeInteger(assertedValue.skip))
+    );
+  }
+
+  static isGetTasksRequestQuery(value: unknown): value is GetTasksRequestQuery {
+    const assertedValue = value as GetTasksRequestQuery;
+    return (
+      (assertedValue.status === undefined || (this.isTaskStatus(assertedValue.status) && assertedValue.status !== TaskStatus.ARCHIVED)) &&
+      (assertedValue.technicianId === undefined || this.isUUID(assertedValue.technicianId)) &&
+      this.isPaginatedRequestQuery(assertedValue)
+    );
   }
 }

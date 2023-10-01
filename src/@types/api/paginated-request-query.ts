@@ -1,4 +1,4 @@
 export interface PaginatedRequestQuery {
-  limit?: string;
-  skip?: string;
+  ['limit']?: string;
+  ['skip']?: string;
 }
