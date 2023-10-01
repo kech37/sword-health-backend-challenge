@@ -67,7 +67,6 @@ describe('Task service', () => {
       sandbox.stub(TaskFacade.getInstance(service), 'get').resolves(getPaginatedResponse<TaskModel>([Mock.TASK_1]));
 
       const result = await TaskService.getInstance(service).get(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, 10, 0);
-
       expect(result).to.be.deep.equal(getPaginatedResponse<TaskModel>([Mock.TASK_1]));
     });
   });
@@ -106,7 +105,6 @@ describe('Task service', () => {
         undefined,
         Mock.TECHNICIAN_1.id,
       );
-
       expect(result).to.be.deep.equal(Mock.TASK_1);
     });
 
@@ -147,7 +145,6 @@ describe('Task service', () => {
       sandbox.stub(TaskFacade.getInstance(service), 'create').resolves(Mock.TASK_1);
 
       const result = await TaskService.getInstance(service).create(Mock.REQUEST_ID, Mock.TECHNICIAN_1.id, Mock.TASK_1.summary, Mock.MANAGER_USER_1.id);
-
       expect(result).to.be.deep.equal(Mock.TASK_1);
     });
 
@@ -155,6 +152,56 @@ describe('Task service', () => {
       try {
         sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.RANDOM_USER);
         await TaskService.getInstance(service).create(Mock.REQUEST_ID, Mock.RANDOM_USER.id, Mock.TASK_1.summary, Mock.MANAGER_USER_1.id);
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole));
+      }
+    });
+  });
+
+  context.only('getById', () => {
+    it('should throw TASK_NOT_FOUND error', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(undefined);
+
+        await TaskService.getInstance(service).getById(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, 'INVALID TASK ID');
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.TaskNotFound));
+      }
+    });
+
+    it('as a manager should resolve', async () => {
+      sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
+      sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+
+      const result = await TaskService.getInstance(service).getById(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, Mock.TASK_1.id);
+      expect(result).to.be.deep.equal(Mock.TASK_1);
+    });
+
+    it('as a technician should resolve', async () => {
+      sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.TECHNICIAN_1);
+      sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+
+      const result = await TaskService.getInstance(service).getById(Mock.REQUEST_ID, Mock.TECHNICIAN_1.id, Mock.TASK_1.id);
+      expect(result).to.be.deep.equal(Mock.TASK_1);
+    });
+
+    it('as a technician should throw CANNONT_PERFORM_OPERATION error', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.TECHNICIAN_2);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+
+        await TaskService.getInstance(service).getById(Mock.REQUEST_ID, Mock.TECHNICIAN_2.id, Mock.TASK_1.id);
+      } catch (error) {
+        expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation));
+      }
+    });
+
+    it('as a random role should throw UNABLE_TO_DETERMINE_ROLE error', async () => {
+      try {
+        sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.RANDOM_USER);
+        sandbox.stub(TaskFacade.getInstance(service), 'getById').resolves(Mock.TASK_1);
+        await TaskService.getInstance(service).getById(Mock.REQUEST_ID, Mock.RANDOM_USER.id, Mock.TASK_1.id);
       } catch (error) {
         expect(error).to.be.deep.equal(ErrorUtils.createApiError(Mock.REQUEST_ID, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole));
       }
