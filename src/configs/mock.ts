@@ -1,5 +1,7 @@
+import { NotificationType } from '../db/@types/notification-type';
 import { TaskStatus } from '../db/@types/task-status';
 import { UserRole } from '../db/@types/user-role';
+import { NotificationModel } from '../models/notification-model';
 import { RoleModel } from '../models/role-model';
 import { TaskModel } from '../models/task-model';
 import { UserModel } from '../models/user-model';
@@ -78,5 +80,14 @@ export class Mock {
     undefined,
     Mock.MANAGER_USER_1,
     Mock.TECHNICIAN_1,
+  );
+
+  static NOTIFICATION = new NotificationModel(
+    'fb55cc43-ed70-4447-9cb8-c8531a862271',
+    NotificationType.TASK_COMPLETED,
+    Mock.MANAGER_USER_1.id,
+    { taskId: Mock.TASK_1.id },
+    false,
+    new Date(),
   );
 }

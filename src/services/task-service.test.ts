@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { createSandbox } from 'sinon';
 import { HttpErrorCode } from '../@types/http-error-code';
 import { LogLevel } from '../@types/log-level';
-import { PaginatedResponse } from '../@types/paginated-response';
 import { Mock } from '../configs/mock';
 import { TaskStatus } from '../db/@types/task-status';
 import { TaskFacade } from '../db/facades/task-facade';
@@ -13,14 +12,8 @@ import { ApplicationError } from '../errors/models/application-error';
 import { TaskModel } from '../models/task-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../utils/error-utils';
+import { TestUtils } from '../utils/test-utils';
 import { TaskService } from './task-service';
-
-function getPaginatedResponse<T>(result: T[]): PaginatedResponse<T> {
-  return {
-    result,
-    total: result.length,
-  };
-}
 
 describe('Task service', () => {
   const service = new SwordHealthBackendChallengeService(LogLevel.SILENT);
@@ -65,10 +58,10 @@ describe('Task service', () => {
 
     it('should resolve', async () => {
       sandbox.stub(UserFacade.getInstance(service), 'getById').resolves(Mock.MANAGER_USER_1);
-      sandbox.stub(TaskFacade.getInstance(service), 'get').resolves(getPaginatedResponse<TaskModel>([Mock.TASK_1]));
+      sandbox.stub(TaskFacade.getInstance(service), 'get').resolves(TestUtils.getPaginatedResponse<TaskModel>([Mock.TASK_1]));
 
       const result = await TaskService.getInstance(service).get(Mock.REQUEST_ID, Mock.MANAGER_USER_1.id, 10, 0);
-      expect(result).to.be.deep.equal(getPaginatedResponse<TaskModel>([Mock.TASK_1]));
+      expect(result).to.be.deep.equal(TestUtils.getPaginatedResponse<TaskModel>([Mock.TASK_1]));
     });
   });
 
