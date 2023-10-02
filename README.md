@@ -69,7 +69,7 @@ npm run setup:dev
 
 - Better security: The API access security should be improved by using access tokens with expiring dates, rotating secret tokens, and implementing the possibility for the user to renew access tokens using a refresh token.
 
-- Better permissions management: The implemented logic is very much tied to the Manager and Technician role, mainly because of the use of the Utils.isManager() and Utils.isTechnician() methods. In the future, better permission control should be implemented using the own CRUD and global CRUD permissions stored in the role table on the database.
+- Better permissions management: The implemented logic is very much tied to the Manager and Technician role, mainly because of the use of the `Utils.isManager()` and `Utils.isTechnician()` methods. In the future, better permission control should be implemented using the own CRUD and global CRUD permissions stored in the role table on the database.
 
 - Better bad request feedback: When the request input data is not well formatted the request response will display a 400 Bad Request error explaining that the request input is not ok. This is not very usefull because of the lack of vebosity say which parameter is wrong.
 
