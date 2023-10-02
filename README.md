@@ -77,10 +77,12 @@ Check future improvents.
 
 - Better permissions management: The implemented logic is very much tied to the Manager and Technician role, mainly because of the use of the `Utils.isManager()` and `Utils.isTechnician()` methods. In the future, better permission control should be implemented using the own CRUD and global CRUD permissions stored in the role table on the database.
 
-- Better bad request feedback: When the request input data is not well formatted the request response will display a 400 Bad Request error explaining that the request input is not ok. This is not very usefull because of the lack of vebosity say which parameter is wrong.
+- Better bad request feedback: When the request input data is not well formatted the request response will display a 400 Bad Request error explaining that the request input is not ok. This is not very useful because of the lack of verbosity to say which parameter is wrong.
 
-- Better type checking: Instead of using custom type guards for each object, a good improvement would be to use a runtime validator (like typia) to validate objects using type tags that can be used to define what an object should be.
+- Better type checking: Instead of using custom type guards for each object, a good improvement would be to use a runtime validator (like `typia`) to validate objects using type tags that can be used to define what an object should be.
 
 - Message broker gracefully stop: In the current implementation when the service connection is stopped it throws an unhandled _IllegalOperationError_ error. A future improvement should be to handle this error gracefully.
 
-- Run as a container: At this moment it's possible to build and run the service using the provided Dockerfile but does not fully work because it doesn't have connection to the database and message broker containers.
+- Run as a container: At this moment it's possible to build and run the service using the provided Dockerfile but does not fully work because it doesn't have a connection to the database and message broker containers.
+
+- Deathletter queue: Implement a system to archive and handle broker messages that do not follow the expected message model.
