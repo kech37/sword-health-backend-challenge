@@ -44,10 +44,6 @@
       "RoleNotLoaded": {
         "code": "I-301",
         "description": "ROLE_NOT_LOADED"
-      },
-      "UserNotLoaded": {
-        "code": "I-302",
-        "description": "USER_NOT_LOADED"
       }
     }
   },

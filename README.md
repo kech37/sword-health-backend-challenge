@@ -43,13 +43,9 @@ npm run setup:dev
 
 ## How to run
 
-<pre>npm run start</pre>
+**⚠️ Before run:** Please check the API swagger (_./sword-health-backend-challenge/docks/swagger.yml_) to know the expected behaviour for each endpoint. **⚠️**
 
-or
-
-<pre>npm run dev</pre>
-
-for pretty logs
+`npm run start` or `npm run dev` for pretty logs
 
 ## Access tokens
 
@@ -73,8 +69,10 @@ for pretty logs
 
 - Better security: The API access security should be improved by using access tokens with expiring dates, rotating secret tokens, and implementing the possibility for the user to renew access tokens using a refresh token.
 
-- Better permissions management: The implemented logic is very much tied to the Manager and Technician role, mainly because of the use of the Utils.isManager() and Utils.isTechnician() methods. In the future, better permission control should be implemented using the own CRUD and global CRUD permissions stored in the role table on the database.
+- Better permissions management: The implemented logic is very much tied to the Manager and Technician role, mainly because of the use of the `Utils.isManager()` and `Utils.isTechnician()` methods. In the future, better permission control should be implemented using the own CRUD and global CRUD permissions stored in the role table on the database.
 
 - Better bad request feedback: When the request input data is not well formatted the request response will display a 400 Bad Request error explaining that the request input is not ok. This is not very usefull because of the lack of vebosity say which parameter is wrong.
 
 - Better type checking: Instead of using custom type guards for each object, a good improvement would be to use a runtime validator (like typia) to validate objects using type tags that can be used to define what an object should be.
+
+- Message broker gracefully stop: In the current implementation when the service connection is stopped it throws an unhandled _IllegalOperationError_ error. A future improvement should be to handle this error gracefully.

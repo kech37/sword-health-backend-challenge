@@ -8,6 +8,7 @@ import { UserFacade } from '../db/facades/user-facade';
 import { ApiBadRequestErrors, ApiForbiddenErrors, ApiNotFoundErrors } from '../errors/generic/api-errors';
 import { AppSingletonErrors } from '../errors/generic/app-errors';
 import { TaskModel } from '../models/task-model';
+import { UserModel } from '../models/user-model';
 import { SwordHealthBackendChallengeService } from '../sword-health-backend-challenge-service';
 import { ErrorUtils } from '../utils/error-utils';
 import { TypeUtils } from '../utils/type-utils';
@@ -55,6 +56,36 @@ export class TaskService extends BaseService {
     return result;
   }
 
+  private async createAsManager(requestId: UUID, managerUser: UserModel, summary: string, technicianId?: UUID): Promise<TaskModel> {
+    this.logger.info({ requestId, managerUser, summary, technicianId }, 'TaskService: createAsManager');
+
+    if (!TypeUtils.isUUID(technicianId)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
+    }
+    const technician = await UserFacade.getInstance(this.service).getById(requestId, technicianId);
+    if (!technician) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
+    }
+    this.logger.debug({ requestId, technician }, 'createAsManager: technician');
+
+    return TaskFacade.getInstance(this.service).create(requestId, summary, managerUser.id, technician.id);
+  }
+
+  private async createAsTechnician(requestId: UUID, technicianUser: UserModel, summary: string, managerId?: UUID): Promise<TaskModel> {
+    this.logger.info({ requestId, technicianUser, summary, managerId }, 'TaskService: createAsTechnician');
+    if (!TypeUtils.isUUID(managerId)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
+    }
+
+    const [manager, managerRole] = await this.auxGetUser(requestId, managerId);
+    if (!Utils.isManagerRole(managerRole)) {
+      throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
+    }
+    this.logger.debug({ requestId, manager, managerRole }, 'createAsTechnician: manager, managerRole');
+
+    return TaskFacade.getInstance(this.service).create(requestId, summary, manager.id, technicianUser.id);
+  }
+
   async create(requestId: UUID, userId: UUID, summary: string, managerId?: UUID, technicianId?: UUID): Promise<TaskModel> {
     this.logger.info({ requestId, userId, summary, managerId, technicianId }, 'TaskService: create');
 
@@ -62,30 +93,11 @@ export class TaskService extends BaseService {
     this.logger.debug({ requestId, user }, 'create: user');
 
     if (Utils.isManagerRole(userRole)) {
-      if (!TypeUtils.isUUID(technicianId)) {
-        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
-      }
-      const technician = await UserFacade.getInstance(this.service).getById(requestId, technicianId);
-      if (!technician) {
-        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_404_NotFound, ApiNotFoundErrors.UserNotFound);
-      }
-      this.logger.debug({ requestId, user }, 'create: technician');
-
-      return TaskFacade.getInstance(this.service).create(requestId, summary, user.id, technician.id);
+      return this.createAsManager(requestId, user, summary, technicianId);
     }
 
     if (Utils.isTechnicianRole(userRole)) {
-      if (!TypeUtils.isUUID(managerId)) {
-        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_400_BadRequest, ApiBadRequestErrors.InvalidCreateTaskRequestBody);
-      }
-
-      const [manager, managerRole] = await this.auxGetUser(requestId, userId);
-      if (!Utils.isManagerRole(managerRole)) {
-        throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.CannotPerformOperation);
-      }
-      this.logger.debug({ requestId, user }, 'create: [manager, managerRole');
-
-      return TaskFacade.getInstance(this.service).create(requestId, summary, manager.id, user.id);
+      return this.createAsTechnician(requestId, user, summary, managerId);
     }
 
     throw ErrorUtils.createApiError(requestId, HttpErrorCode.HTTP_403_Forbidden, ApiForbiddenErrors.UnableToDetermineRole);
