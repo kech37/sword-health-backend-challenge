@@ -43,13 +43,9 @@ npm run setup:dev
 
 ## How to run
 
-<pre>npm run start</pre>
+**⚠️ Before run:** Please check the API swagger (_./sword-health-backend-challenge/docks/swagger.yml_) to know the expected behaviour for each endpoint. **⚠️**
 
-or
-
-<pre>npm run dev</pre>
-
-for pretty logs
+`npm run start` or `npm run dev` for pretty logs
 
 ## Access tokens
 

@@ -25,7 +25,7 @@ paths:
 
         - If the user is a manager he can see all the available tasks
 
-        - If the user is a technician he can only see the tasks were he is the task technician (The _technicianId_ property in the query parameter is ignored)
+        - If the user is a technician he can only see the tasks were he is the task technician
 
         - Task with archived status will not be displayed
       operationId: getTasks
