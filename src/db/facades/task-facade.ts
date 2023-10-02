@@ -69,26 +69,32 @@ export class TaskFacade extends BaseFacade {
     this.initRepositories();
     this.logger.info({ requestId, summary, managerId, technicianId }, 'TaskFacade: create');
 
-    const insertedResult = await this.taskRepository.insert({
-      summary,
-      managerId,
-      technicianId,
-    });
-    this.logger.debug({ requestId, insertedResult }, 'create: insertedResult');
+    const result = await this.dataSource.transaction(async (em) => {
+      const resp = em.getRepository(TaskEntity);
 
-    const { id } = insertedResult.identifiers[0];
-    TypeUtils.assertUUID(id);
+      const insertedTask = await resp.insert({
+        summary,
+        managerId,
+        technicianId,
+      });
+      this.logger.debug({ requestId, insertedTask }, 'create: insertedTask');
 
-    const result = await this.taskRepository.findOneOrFail({
-      relations: {
-        manager: true,
-        technician: true,
-      },
-      where: {
-        id,
-      },
+      const { id } = insertedTask.identifiers[0];
+      TypeUtils.assertUUID(id);
+
+      const task = await resp.findOneOrFail({
+        relations: {
+          manager: true,
+          technician: true,
+        },
+        where: {
+          id,
+        },
+      });
+      this.logger.debug({ requestId, task }, 'create: task');
+
+      return task;
     });
-    this.logger.debug({ requestId, result }, 'create: result');
 
     return TaskModel.fromEntity(result);
   }
@@ -116,27 +122,33 @@ export class TaskFacade extends BaseFacade {
     this.initRepositories();
     this.logger.info({ requestId, id }, 'TaskFacade: update');
 
-    const updateResult = await this.taskRepository.update(
-      {
-        id,
-      },
-      {
-        status,
-        summary,
-      },
-    );
-    this.logger.debug({ requestId, updateResult }, 'update: updateResult');
+    const result = await this.dataSource.transaction(async (em) => {
+      const resp = em.getRepository(TaskEntity);
 
-    const result = await this.taskRepository.findOneOrFail({
-      relations: {
-        manager: true,
-        technician: true,
-      },
-      where: {
-        id,
-      },
+      const updateTask = await resp.update(
+        {
+          id,
+        },
+        {
+          status,
+          summary,
+        },
+      );
+      this.logger.debug({ requestId, updateTask }, 'update: updateTask');
+
+      const task = await resp.findOneOrFail({
+        relations: {
+          manager: true,
+          technician: true,
+        },
+        where: {
+          id,
+        },
+      });
+      this.logger.debug({ requestId, task }, 'update: task');
+
+      return task;
     });
-    this.logger.debug({ requestId, result }, 'update: result');
 
     return TaskModel.fromEntity(result);
   }

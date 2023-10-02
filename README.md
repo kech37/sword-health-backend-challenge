@@ -78,3 +78,5 @@ for pretty logs
 - Better bad request feedback: When the request input data is not well formatted the request response will display a 400 Bad Request error explaining that the request input is not ok. This is not very usefull because of the lack of vebosity say which parameter is wrong.
 
 - Better type checking: Instead of using custom type guards for each object, a good improvement would be to use a runtime validator (like typia) to validate objects using type tags that can be used to define what an object should be.
+
+- Message broker gracefully stop: In the current implementation when the service connection is stopped it throws an unhandled _IllegalOperationError_ error. A future improvement should be to handle this error gracefully.
