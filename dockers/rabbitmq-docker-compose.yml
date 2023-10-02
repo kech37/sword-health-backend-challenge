@@ -10,14 +10,14 @@ services:
       # The list of ports that will be mapped from the container to the outside world
       - 5672:5672
       - 15672:15672
-      # This allows us to view the files directly in their local folder structure instead of having to connect to the container
     volumes:
-      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
-      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+      - rabbitmq_volume:/rabbitmq/data/:/var/lib/rabbitmq/
+      - rabbitmq_volume:/rabbitmq/log/:/var/log/rabbitmq
       # Where we specify the network's name that the container will be using.
     networks:
       - rabbitmq_go_net
-
+volumes:
+  rabbitmq_volume:
 networks:
   rabbitmq_go_net:
     driver: bridge
