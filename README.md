@@ -1,4 +1,4 @@
-# Sword Health Backend Challenges
+# Sword Health Backend Challenge
 
 ## How to build
 
