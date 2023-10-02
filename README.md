@@ -11,7 +11,7 @@ docker-compose -f ./dockers/mysql-docker-compose.yml up -d
 docker-compose -f ./dockers/rabbitmq-docker-compose.yml up -d
 </pre>
 
-2. Create .env file in the project root diretory with the following content
+2. Create _.env_ file in the project root diretory (_./sword-health-backend-challenge/_) with the following content
 
 <pre>
 log_level=trace
