@@ -45,7 +45,13 @@ npm run setup:dev
 
 **⚠️ Before run:** Please check the API swagger (_./sword-health-backend-challenge/docks/swagger.yml_) to know the expected behaviour for each endpoint. **⚠️**
 
-`npm run start` or `npm run dev` for pretty logs
+#### Run locally
+
+`npm run start` or `npm run dev` for pretty.
+
+#### Run as docker container
+
+Check future improvents.
 
 ## Access tokens
 
@@ -76,3 +82,5 @@ npm run setup:dev
 - Better type checking: Instead of using custom type guards for each object, a good improvement would be to use a runtime validator (like typia) to validate objects using type tags that can be used to define what an object should be.
 
 - Message broker gracefully stop: In the current implementation when the service connection is stopped it throws an unhandled _IllegalOperationError_ error. A future improvement should be to handle this error gracefully.
+
+- Run as a container: At this moment it's possible to build and run the service using the provided Dockerfile but does not fully work because it doesn't have connection to the database and message broker containers.
