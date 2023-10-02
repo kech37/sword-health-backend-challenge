@@ -70,9 +70,9 @@ export class TaskFacade extends BaseFacade {
     this.logger.info({ requestId, summary, managerId, technicianId }, 'TaskFacade: create');
 
     const result = await this.dataSource.transaction(async (em) => {
-      const resp = em.getRepository(TaskEntity);
+      const rep = em.getRepository(TaskEntity);
 
-      const insertedTask = await resp.insert({
+      const insertedTask = await rep.insert({
         summary,
         managerId,
         technicianId,
@@ -82,7 +82,7 @@ export class TaskFacade extends BaseFacade {
       const { id } = insertedTask.identifiers[0];
       TypeUtils.assertUUID(id);
 
-      const task = await resp.findOneOrFail({
+      const task = await rep.findOneOrFail({
         relations: {
           manager: true,
           technician: true,
@@ -123,9 +123,9 @@ export class TaskFacade extends BaseFacade {
     this.logger.info({ requestId, id }, 'TaskFacade: update');
 
     const result = await this.dataSource.transaction(async (em) => {
-      const resp = em.getRepository(TaskEntity);
+      const rep = em.getRepository(TaskEntity);
 
-      const updateTask = await resp.update(
+      const updateTask = await rep.update(
         {
           id,
         },
@@ -136,7 +136,7 @@ export class TaskFacade extends BaseFacade {
       );
       this.logger.debug({ requestId, updateTask }, 'update: updateTask');
 
-      const task = await resp.findOneOrFail({
+      const task = await rep.findOneOrFail({
         relations: {
           manager: true,
           technician: true,
