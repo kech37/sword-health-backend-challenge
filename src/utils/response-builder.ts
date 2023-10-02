@@ -4,7 +4,7 @@ import { Task } from '../@types/api/task';
 import { TaskSummary } from '../@types/api/task-summary';
 import { User } from '../@types/api/user';
 import { PaginatedResponse } from '../@types/paginated-response';
-import { AppDatabaseErrors, AppResponseBuilderErrors } from '../errors/generic/app-errors';
+import { AppResponseBuilderErrors } from '../errors/generic/app-errors';
 import { NotificationModel } from '../models/notification-model';
 import { TaskModel } from '../models/task-model';
 import { UserModel } from '../models/user-model';
@@ -20,7 +20,7 @@ export class ResponseBuilder {
 
   static toTask(model: TaskModel): Task {
     if (!model.manager || !model.technician) {
-      throw ErrorUtils.createApplicationError(AppDatabaseErrors.Relations.UserNotLoaded);
+      throw ErrorUtils.createApplicationError(AppResponseBuilderErrors.UserNotDefined);
     }
 
     return {
